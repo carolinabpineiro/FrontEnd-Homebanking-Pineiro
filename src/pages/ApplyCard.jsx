@@ -1,6 +1,6 @@
 import React from 'react'
 import SelectCard from '../components/SelectCard'
-import CustomButton from '../components/CustomButton'
+
 
 function ApplyCard() {
   return (

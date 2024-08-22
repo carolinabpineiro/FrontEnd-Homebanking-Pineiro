@@ -3,35 +3,41 @@ import { Link } from 'react-router-dom';
 
 function Nav() {
   return (
-    <nav className="flex items-center justify-around p-4 bg-green-900 text-white w-full">
+    <nav className="flex items-center justify-between p-4 bg-green-900 text-white w-full">
+      {/* Contenedor del Logo y Texto */}
+      <div className="flex items-center space-x-4">
+        <Link to="/">
+          <img src="/logo.png" alt="logo" className="h-24 w-auto" />
+        </Link>
+        <span className="text-xl font-bold">BANKING 55</span>
+      </div>
+
       {/* Menú de Navegación */}
-      <div className="flex flex-col md:flex-row items-center justify-around w-full space-y-2 md:space-y-0">
-        {/* Enlaces a la izquierda */}
-        <div className="flex space-x-4 item-center w-full md:w-auto">
-          <Link to="/accounts" className="border border-green-300 px-3 py-2 rounded hover:bg-green-700 transition whitespace-nowrap w-32 text-center">
-            Accounts
-          </Link>
-          <Link to="/cards" className="border border-green-300 px-3 py-2 rounded hover:bg-green-700 transition whitespace-nowrap w-32 text-center">
-            Cards
-          </Link>
-        </div>
-
-        {/* Logo en el medio */}
-        <div className="flex items-center justify-center flex-grow md:w-auto">
-          <Link to="/">
-            <img src="/logo.png" alt="logo" className="h-32 max-w-full " />
-          </Link>
-        </div>
-
-        {/* Enlaces a la derecha */}
-        <div className="flex space-x-4 items-center w-full md:w-auto">
-          <Link to="/loans" className="border border-green-300 px-3 py-2 rounded hover:bg-green-700 transition whitespace-nowrap w-32 text-center">
-            Loans
-          </Link>
-          <Link to="/transactions" className="border border-green-300 px-3 py-2 rounded hover:bg-green-700 transition whitespace-nowrap w-32 text-center">
-            Transactions
-          </Link>
-        </div>
+      <div className="flex space-x-4 flex-grow justify-center md:justify-end">
+        <Link 
+          to="/accounts" 
+          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-32 text-center"
+        >
+          Accounts
+        </Link>
+        <Link 
+          to="/cards" 
+          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-32 text-center"
+        >
+          Cards
+        </Link>
+        <Link 
+          to="/loans" 
+          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-32 text-center"
+        >
+          Loans
+        </Link>
+        <Link 
+          to="/transactions" 
+          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-32 text-center"
+        >
+          Transactions
+        </Link>
       </div>
 
       {/* Icono de Logout */}

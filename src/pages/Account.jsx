@@ -33,7 +33,7 @@ const Account = () => {
   return (
     <div className="w-full">
       <div className="text-center mt-8 mb-4">
-        <h1 className="text-3xl font-bold mb-8">Your Selected Account</h1>
+        <h1 className="text-3xl font-bold mb-8 mt-8 text-center text-green-800">Your Selected Account</h1>
       </div>
       <Carousel />
       <div className='flex space-x-4 justify-center items-center mb-8 mt-8'>
