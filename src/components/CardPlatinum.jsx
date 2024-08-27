@@ -26,7 +26,7 @@ function CardPlatinum() {
         </div>
 
         {/* Número de la tarjeta */}
-        <div className="text-xl font-bold tracking-wider flex justify-center">
+        <div className="text-xl font-bold tracking-wider flex justify-center"  style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.7)' }}>
           {cardNumber.split('').map((char, index) => (
             <span key={index} className="mx-1">
               {char}
@@ -35,7 +35,7 @@ function CardPlatinum() {
         </div>
 
         {/* Información de la tarjeta */}
-        <div className="flex justify-between text-sm font-mono tracking-widest mt-4">
+        <div className="flex justify-between text-lg font-mono tracking-widest mt-4"  style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.7)' }}>
           <div>{cardHolder}</div>
           <div>{expiryDate}</div>
         </div>

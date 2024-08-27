@@ -37,17 +37,21 @@ const TransactionsResume = () => {
           </tr>
         </thead>
         <tbody>
-          {transactions.map((transaction, index) => (
-            <tr key={index} className="border-b border-gray-200">
-              <td className="py-2 px-4">{transaction.type}</td>
-              <td className="py-2 px-4">
-                {transaction.amount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}
-              </td>
-              <td className="py-2 px-4">{new Date(transaction.date).toLocaleDateString()}</td>
-              <td className="py-2 px-4">{new Date(transaction.date).toLocaleTimeString()}</td>
-              <td className="py-2 px-4">{transaction.transcription}</td>
-            </tr>
-          ))}
+          {transactions.map((transaction, index) => {
+            const typeClass = transaction.type === 'DEBIT' ? 'text-green-600' : 'text-red-600';
+            const amountClass = transaction.type === 'DEBIT' ? 'text-green-600' : 'text-red-600';
+            return (
+              <tr key={index} className="border-b border-gray-200">
+                <td className={`py-2 px-4 ${typeClass}`}>{transaction.type}</td>
+                <td className={`py-2 px-4 ${amountClass}`}>
+                  {transaction.amount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}
+                </td>
+                <td className="py-2 px-4">{new Date(transaction.date).toLocaleDateString()}</td>
+                <td className="py-2 px-4">{new Date(transaction.date).toLocaleTimeString()}</td>
+                <td className="py-2 px-4">{transaction.transcription}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

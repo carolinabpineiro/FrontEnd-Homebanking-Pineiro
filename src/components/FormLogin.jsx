@@ -17,13 +17,14 @@ const FormLogin = () => {
     <div className="flex justify-center items-center h-screen ">
       <div className="bg-green-300 p-8 rounded-lg shadow-lg w-2/5 "> {/* Cambié la clase de ancho */}
         {/* Logo */}
-        <div className="flex justify-center mb-8">
-          <img
-            src="/logo.png"
-            alt="Logo"
-            className="w-24"
-          />
-        </div>
+        <div className="flex flex-col items-center mb-8">
+    <img
+      src="/logo.png"
+      alt="Logo"
+      className="w-24 mb-2"
+    />
+    <h1 className="font-bold">BANKING 55</h1>
+  </div>
 
         {/* Formulario de inicio de sesión */}
         <form onSubmit={handleLogin}>

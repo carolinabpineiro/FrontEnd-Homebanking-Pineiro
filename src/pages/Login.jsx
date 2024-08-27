@@ -9,6 +9,7 @@ const Login = () => {
       style={{ backgroundImage: "url('/fondo3.png')" }}
     >
       <div className="w-2/3"> 
+      
         <FormLogin />
       </div>
     </div>

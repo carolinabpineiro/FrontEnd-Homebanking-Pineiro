@@ -26,7 +26,7 @@ const CardBlack = () => {
         </div>
 
         {/* Número de la tarjeta */}
-        <div className="text-xl font-bold tracking-wider flex justify-center">
+        <div className="text-xl font-bold tracking-wider flex justify-center ">
           {cardNumber.split('').map((char, index) => (
             <span key={index} className="mx-1">
               {char}
@@ -35,7 +35,7 @@ const CardBlack = () => {
         </div>
 
         {/* Información de la tarjeta */}
-        <div className="flex justify-between text-sm font-mono tracking-widest mt-4">
+        <div className="flex justify-between text-lg font-mono tracking-widest mt-4">
           <div>{cardHolder}</div>
           <div>{expiryDate}</div>
         </div>
