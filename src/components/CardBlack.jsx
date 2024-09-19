@@ -42,7 +42,7 @@ const CardBlack = () => {
       </div>
 
       {/* Tarjeta con imagen de fondo alternativo que aparece al pasar el mouse */}
-      <div className="absolute inset-0 bg-[url('blackDorso.png')] bg-cover bg-center text-white rounded-lg shadow-lg p-6 w-full h-full flex flex-col justify-between opacity-0 transition duration-300 ease-in-out transform hover:opacity-100">
+      <div className="absolute inset-0 bg-[url('SillverDorso.png')] bg-cover bg-center text-white rounded-lg shadow-lg p-6 w-full h-full flex flex-col justify-between opacity-0 transition duration-300 ease-in-out transform hover:opacity-100">
      
     </div>
 

@@ -6,7 +6,7 @@ import CustomButton from '../components/CustomButton';
 
 function Cards() {
   return (
-    <div className="p-4">
+    <div className="p-4 bg-cover bg-center" style={{ backgroundImage: "url('/Tarjeta_online.jpg')" }}>
       {/* Contenido de la página Cards */}
       <h1 className="text-3xl font-bold mb-8 mt-8 text-center text-green-800">Your Cards</h1>
 
@@ -16,7 +16,6 @@ function Cards() {
 
       {/* Sección de Credit Cards */}
       <div className="mb-8">
-
         <div className="flex flex-wrap justify-around gap-4">
           <h2 className="text-left text-2xl font-semibold mb-4">Credit:</h2>
           <CardBlack />
@@ -27,7 +26,6 @@ function Cards() {
 
       {/* Sección de Debit Cards */}
       <div>
-
         <div className="flex flex-wrap justify-around gap-4">
           <h2 className="text-left text-2xl font-semibold mb-4">Debit:</h2>
           <CardBlack />

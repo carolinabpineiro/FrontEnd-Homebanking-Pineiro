@@ -10,29 +10,28 @@ const FormRegister = () => {
   };
 
   const handleLogin = () => {
-    // Redirige a la página de Login
     navigate('/');
   };
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="bg-green-300 p-24 rounded-lg shadow-lg w-full">
+      <div className="bg-green-700 opacity-90 p-24 rounded-lg shadow-lg w-1/2">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-    <img
-      src="/logo.png"
-      alt="Logo"
-      className="w-24 mb-2"
-    />
-    <h1 className="font-bold">BANKING 55</h1>
-  </div>
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="w-24 mb-2"
+          />
+          <h1 className="font-bold text-white">BANKING 55</h1>
+        </div>
+
         {/* Formulario de registro */}
         <form onSubmit={handleRegister}>
-         
           <div className="mb-6">
             <label
               htmlFor="firstName"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-gray-200 text-sm font-bold mb-2"
             >
               First Name
             </label>
@@ -49,7 +48,7 @@ const FormRegister = () => {
           <div className="mb-6">
             <label
               htmlFor="lastName"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-gray-200 text-sm font-bold mb-2"
             >
               Last Name
             </label>
@@ -66,7 +65,7 @@ const FormRegister = () => {
           <div className="mb-6">
             <label
               htmlFor="email"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-gray-200 text-sm font-bold mb-2"
             >
               E-mail
             </label>
@@ -83,7 +82,7 @@ const FormRegister = () => {
           <div className="mb-6">
             <label
               htmlFor="password"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-gray-200 text-sm font-bold mb-2"
             >
               Password
             </label>
@@ -109,9 +108,9 @@ const FormRegister = () => {
 
         {/* Enlace de Login */}
         <div className="mt-6 text-center">
-          <p className="text-gray-700">¿Ya tienes cuenta? 
+          <p className="text-gray-200">¿Ya tienes cuenta? 
             <span 
-              className="text-blue-500 cursor-pointer hover:underline ml-2"
+              className="text-blue-400 cursor-pointer hover:underline ml-2"
               onClick={handleLogin}
             >
               Login

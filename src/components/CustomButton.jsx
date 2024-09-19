@@ -1,10 +1,14 @@
 import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 
-const CustomButton = ({ text, redirectTo, bgColor = 'bg-green-500', hoverColor = 'hover:bg-green-700', textColor = 'text-white' }) => {
+const CustomButton = ({ text, redirectTo, onClick, bgColor = 'bg-green-500', hoverColor = 'hover:bg-green-700', textColor = 'text-white' }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
+    if (onClick) {
+      onClick(); // Ejecutar la función proporcionada por `onClick`
+    }
     if (redirectTo) {
       navigate(redirectTo);
     }

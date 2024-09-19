@@ -14,25 +14,24 @@ const FormLogin = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen ">
-      <div className="bg-green-300 p-8 rounded-lg shadow-lg w-2/5 "> {/* Cambié la clase de ancho */}
+    <div className="flex justify-center items-center h-screen">
+      <div className="bg-green-700 opacity-90 p-24 rounded-lg shadow-lg w-1/2">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-    <img
-      src="/logo.png"
-      alt="Logo"
-      className="w-24 mb-2"
-    />
-    <h1 className="font-bold">BANKING 55</h1>
-  </div>
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="w-24 mb-2"
+          />
+          <h1 className="font-bold text-white">BANKING 55</h1>
+        </div>
 
         {/* Formulario de inicio de sesión */}
         <form onSubmit={handleLogin}>
-          {/* Campo de E-mail */}
           <div className="mb-6">
             <label
               htmlFor="email"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-gray-200 text-sm font-bold mb-2"
             >
               E-mail
             </label>
@@ -49,7 +48,7 @@ const FormLogin = () => {
           <div className="mb-6">
             <label
               htmlFor="password"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-gray-200 text-sm font-bold mb-2"
             >
               Password
             </label>
@@ -75,9 +74,9 @@ const FormLogin = () => {
 
         {/* Enlace de Registro */}
         <div className="mt-6 text-center">
-          <p className="text-gray-700">No tienes cuenta? 
+          <p className="text-gray-200">¿No tienes cuenta? 
             <span 
-              className="text-blue-500 cursor-pointer hover:underline ml-2"
+              className="text-blue-400 cursor-pointer hover:underline ml-2"
               onClick={handleRegister}
             >
               Register
