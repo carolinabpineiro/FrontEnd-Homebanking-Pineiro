@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
-import authReducer from './reducers/authReducer'; // Asegúrate de que la ruta sea correcta
+import authReducer from './reducers/authReducer'; 
+import cardReducer from './reducers/cardReducer';
 
 // Configuración del store
 const store = configureStore({
   reducer: {
-    auth: authReducer, // Solo authReducer
+    auth: authReducer, 
+    cards: cardReducer,
   },
 });
 

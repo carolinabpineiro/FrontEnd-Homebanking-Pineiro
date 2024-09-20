@@ -25,9 +25,9 @@ function CardTitanium({ card }) {
 
       {/* Parte trasera de la tarjeta (dorso) */}
       <div className="absolute inset-0 bg-[url('TitaniumDorso.png')] bg-cover bg-center text-white rounded-lg shadow-lg p-6 w-full h-full flex flex-col justify-between opacity-0 transition duration-300 ease-in-out transform hover:opacity-100">
-        <div className="flex justify-center text-xl font-bold tracking-widest">
-          CVV: {cvv} {/* Mostramos el CVV en el dorso */}
-        </div>
+      <div className="flex justify-end text-xl font-bold tracking-widest text-gray-900 mt-32 mr-12">
+  CVV: {cvv}
+</div>
       </div>
     </div>
   );

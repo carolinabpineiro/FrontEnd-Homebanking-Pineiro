@@ -6,7 +6,7 @@ function CardSilver({ card }) {
   return (
     <div className="relative max-w-md w-full h-72">
       {/* Parte frontal de la tarjeta */}
-      <div className="bg-[url('/gold.JPG')] bg-cover bg-center text-white rounded-lg shadow-lg p-6 w-full h-full flex flex-col justify-between transition duration-300 ease-in-out transform hover:opacity-0">
+      <div className="bg-[url('/black.jpg')] bg-cover bg-center text-white rounded-lg shadow-lg p-6 w-full h-full flex flex-col justify-between transition duration-300 ease-in-out transform hover:opacity-0">
         <div className="flex items-center justify-between">
           <img src="/chip.png" alt="chip" className="w-16" />
           <div className="text-lg font-semibold">Banking 55</div>
@@ -22,15 +22,13 @@ function CardSilver({ card }) {
           <div>{new Date(thruDate).toLocaleDateString('en-US', { year: '2-digit', month: '2-digit' })}</div>
         </div>
       </div>
-
-      {/* Parte trasera de la tarjeta (dorso) */}
-      <div className="absolute inset-0 bg-[url('goldDorso.png')] bg-cover bg-center text-white rounded-lg shadow-lg p-6 w-full h-full flex flex-col justify-between opacity-0 transition duration-300 ease-in-out transform hover:opacity-100">
-        <div className="flex justify-center text-xl font-bold tracking-widest">
-          CVV: {cvv} {/* Mostramos el CVV en el dorso */}
-        </div>
+      <div className="absolute inset-0 bg-[url('SillverDorso.png')] bg-cover bg-center text-white rounded-lg shadow-lg p-6 w-full h-full flex flex-col justify-between opacity-0 transition duration-300 ease-in-out transform hover:opacity-100">
+      <div className="flex justify-end text-xl font-bold tracking-widest text-gray-900 mt-32 mr-12">
+  CVV: {cvv}
+</div>
       </div>
     </div>
   );
 }
-
+      
 export default CardSilver;

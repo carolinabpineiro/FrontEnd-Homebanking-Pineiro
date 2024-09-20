@@ -13,6 +13,10 @@ const FormLogin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    // Limpia las tarjetas almacenadas al iniciar sesión
+    localStorage.removeItem('cards');
+
     try {
       const result = await dispatch(login({ email, password }));
       if (result.type === 'auth/login/fulfilled') {
