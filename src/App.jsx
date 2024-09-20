@@ -9,10 +9,13 @@ import Cards from './pages/Cards';
 import ApplyCard from './pages/ApplyCard';
 import Loans from './pages/Loans';
 import Transactions from './pages/Transactions';
+import { ToastContainer } from 'react-toastify'; // Importamos ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Importamos los estilos de Toastify
 
 function App() {
   return (
     <Router>
+      <ToastContainer /> {/* Añadimos el contenedor de Toastify */}
       <Routes>
         {/* Rutas públicas */}
         <Route path="/" element={<Login />} />
