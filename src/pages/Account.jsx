@@ -1,17 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import Carousel from '../components/Carousel';
+import Card from "../components/Card";
 import TransactionsResume from '../components/TransactionsResume';
-import Card from '../components/Card';
+import Carousel from '../components/Carousel';
 
 const Account = () => {
-  // Datos hardcodeados para simular una cuenta
-  const account = {
-    number: 'VIN12345678',
-    balance: 15000.00,
-    creationDate: '2023-09-15'
-  };
+  const { id } = useParams(); // Obtiene el ID de la cuenta de los parámetros de la URL
+  const [account, setAccount] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchAccount = async () => {
+      try {
+        const token = localStorage.getItem('token');
+
+        // Obtener la cuenta
+        const accountResponse = await axios.get(`http://localhost:8080/api/accounts/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setAccount(accountResponse.data);
+
+        // Obtener las transacciones de la cuenta
+        const transactionsResponse = await axios.get(`http://localhost:8080/api/transactions/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setTransactions(transactionsResponse.data);
+      } catch (err) {
+        console.error('Error fetching account:', err);
+        setError('Error fetching account');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAccount();
+  }, [id]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="w-full">
@@ -20,12 +49,14 @@ const Account = () => {
       </div>
       <Carousel />
       <div className="flex space-x-4 justify-center items-center mb-8 mt-8">
-        <Card 
-          accountNumber={account.number} 
-          amount={account.balance} 
-          creationDate={account.creationDate} 
-        />
-        <TransactionsResume />
+        {account && (
+          <Card 
+            accountNumber={account.number} 
+            amount={account.balance} 
+            creationDate={account.creationDate} 
+          />
+        )}
+        <TransactionsResume transactions={transactions} />
       </div>
     </div>
   );

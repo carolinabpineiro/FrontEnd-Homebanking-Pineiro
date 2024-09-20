@@ -1,6 +1,6 @@
 import React from 'react';
 
-function CardGold({ card }) {
+function CardSilver({ card }) {
   const { cardNumber, cardHolder, thruDate, cvv } = card; // Añadimos 'cvv' del objeto 'card'
 
   return (
@@ -25,13 +25,12 @@ function CardGold({ card }) {
 
       {/* Parte trasera de la tarjeta (dorso) */}
       <div className="absolute inset-0 bg-[url('goldDorso.png')] bg-cover bg-center text-white rounded-lg shadow-lg p-6 w-full h-full flex flex-col justify-between opacity-0 transition duration-300 ease-in-out transform hover:opacity-100">
-      <div className="flex justify-end text-xl font-bold tracking-widest text-gray-800 mt-4">
-  CVV: {cvv}
-</div>
+        <div className="flex justify-center text-xl font-bold tracking-widest">
+          CVV: {cvv} {/* Mostramos el CVV en el dorso */}
+        </div>
       </div>
     </div>
   );
 }
 
-
-export default CardGold;
+export default CardSilver;
