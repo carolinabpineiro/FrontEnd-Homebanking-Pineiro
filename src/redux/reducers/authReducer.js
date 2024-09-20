@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { login, register } from '../actions/authActions';  // Asegúrate de importar login correctamente
+import { login, fetchCurrentUser, register } from '../actions/authActions';
 
 const authSlice = createSlice({
   name: 'auth',
@@ -21,11 +21,28 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (state, action) => {
-        state.token = action.payload.token;
-        state.user = action.payload.user;
+        console.log('Login Fulfilled:', action.payload); // Verifica el payload
+        state.token = action.payload.token; // Asegúrate de que no sea undefined
         state.isAuthenticated = true;
+        state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchCurrentUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(register.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       });

@@ -1,15 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { useDispatch, useSelector } from 'react-redux'; // Importa los hooks
-import authReducer from './reducers/authReducers'; // Actualiza la ruta y nombre del archivo
-import accountReducer from './reducers/accountReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import authReducer from './reducers/authReducer'; // Asegúrate de que la ruta sea correcta
 
-export const store = configureStore({
+// Configuración del store
+const store = configureStore({
   reducer: {
-    auth: authReducer,
-    accounts: accountReducer,  // Aquí pueden agregarse otros reducers en el futuro
+    auth: authReducer, // Solo authReducer
   },
 });
 
-// Hooks para usar en componentes
+// Exportación de hooks personalizados
 export const useAppDispatch = () => useDispatch();
-export const useAppSelector = (selector) => useSelector(selector);
+export const useAppSelector = useSelector; // Solo exportamos useSelector, sin tipo
+
+// Exporta el store
+export default store; 

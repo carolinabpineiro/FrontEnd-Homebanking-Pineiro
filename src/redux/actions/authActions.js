@@ -9,10 +9,21 @@ export const login = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/login`, credentials);
-      const { token, user } = response.data; // Asumimos que la respuesta contiene token y usuario
+      
+      console.log('Response completa:', response); 
+      console.log('Response data (token):', response.data); // Aquí el token
+
+      // Ya no estamos buscando "response.data.token", simplemente tomamos el "response.data"
+      const token = response.data;
+
+      if (!token) {
+        throw new Error('Token no encontrado en la respuesta');
+      }
+
       localStorage.setItem('token', token);
-      return { token, user }; // Retornamos un objeto con el token y el usuario
+      return { token }; // Retorna solo el token
     } catch (error) {
+      console.error('Error en la autenticación:', error);
       return rejectWithValue(error.response?.data || 'Error en la autenticación');
     }
   }
@@ -24,9 +35,27 @@ export const register = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/signup`, credentials);
-      return response.data; // Puedes retornar algún mensaje o datos si es necesario
+      console.log('Registro exitoso:', response.data); // Verifica la respuesta
+      return response.data; // Retorna la respuesta
     } catch (error) {
+      console.error('Error en el registro:', error);
       return rejectWithValue(error.response?.data || 'Error en el registro');
+    }
+  }
+);
+
+// Acción para obtener el usuario actual
+export const fetchCurrentUser = createAsyncThunk(
+  'auth/fetchCurrentUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_URL}/current`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data; // Retorna los datos del usuario
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Error al obtener el usuario');
     }
   }
 );

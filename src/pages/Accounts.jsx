@@ -1,20 +1,42 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import CustomButton from '../components/CustomButton';
 import Carousel from '../components/Carousel';
 import Card from '../components/Card';
-import { fetchAccounts, requestAccount } from '../redux/actions/accountActions';
 import { Link } from 'react-router-dom';
 
+const malvaAccountsIds = [1, 2];
+
 const Accounts = () => {
-  const dispatch = useDispatch();
-  const { accounts, status, error } = useSelector(state => state.accounts);
-  const userName = useSelector(state => state.auth.userName); // Asegúrate de tener `userName` en tu estado
+  const [accounts, setAccounts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const hardcodedAccounts = [
+    { id: 1, number: 'VIN12345678', balance: 15000.00, creationDate: '2023-09-15' },
+    { id: 2, number: 'VIN87654321', balance: 8000.00, creationDate: '2023-08-10' },
+  ];
 
   useEffect(() => {
-    dispatch(fetchAccounts());
-  }, [dispatch]);
+    const fetchAccounts = async () => {
+      try {
+        // Simula la petición GET a la API con datos hardcodeados
+        // Aquí reemplazarías la línea siguiente con la petición real cuando esté disponible
+        // const response = await axios.get('http://localhost:8080/api/accounts');
+        
+        const filteredAccounts = hardcodedAccounts.filter(account => malvaAccountsIds.includes(account.id));
+
+        setAccounts(filteredAccounts);
+      } catch (err) {
+        console.error('Error fetching accounts:', err);
+        setError('Error fetching accounts');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAccounts();
+  }, []);
 
   const handleRequestAccount = () => {
     Swal.fire({
@@ -30,17 +52,22 @@ const Accounts = () => {
       buttonsStyling: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(requestAccount());
+        Swal.fire({
+          title: 'Requested!',
+          text: 'Your account request has been submitted.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
       }
     });
   };
 
-  if (status === 'loading') return <p>Loading...</p>;
-  if (status === 'failed') return <p>{error}</p>;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>
-      <h1 className="text-4xl text-green-800 font-bold text-center py-8">Welcome, {userName}!</h1>
+      <h1 className="text-4xl text-green-800 font-bold text-center py-8">Welcome, Thomas!</h1>
       <Carousel />
       <div className="flex justify-center items-center space-x-4 mt-8 mb-8">
         <div className="py-4">
