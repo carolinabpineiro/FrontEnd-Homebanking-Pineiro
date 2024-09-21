@@ -4,6 +4,7 @@ import axios from 'axios';
 import Card from "../components/Card";
 import TransactionsResume from '../components/TransactionsResume';
 import Carousel from '../components/Carousel';
+import { toast } from 'react-toastify';
 
 const Account = () => {
   const { id } = useParams(); // Obtiene el ID de la cuenta de los parámetros de la URL
@@ -13,10 +14,10 @@ const Account = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchAccount = async () => {
-      try {
-        const token = localStorage.getItem('token');
+    const fetchAccountAndTransactions = async () => {
+      const token = localStorage.getItem('token');
 
+      try {
         // Obtener la cuenta
         const accountResponse = await axios.get(`http://localhost:8080/api/accounts/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -28,16 +29,30 @@ const Account = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTransactions(transactionsResponse.data);
+
+        // Notificar que se ha actualizado la cuenta
+        toast.success('Account and transactions loaded successfully.');
       } catch (err) {
         console.error('Error fetching account:', err);
-        setError('Error fetching account');
+        setError('Error fetching account or transactions.');
+        toast.error('Error fetching account or transactions.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAccount();
+    fetchAccountAndTransactions();
   }, [id]);
+
+  const handleUpdateBalance = (newBalance) => {
+    if (account) {
+      setAccount((prev) => ({
+        ...prev,
+        balance: newBalance,
+      }));
+      toast.success('Balance updated successfully.');
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -58,6 +73,7 @@ const Account = () => {
         )}
         <TransactionsResume transactions={transactions} />
       </div>
+      {/* Aquí puedes agregar más componentes o lógica según necesites */}
     </div>
   );
 };
