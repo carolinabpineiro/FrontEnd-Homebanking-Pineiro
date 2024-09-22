@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import TransferForm from '../components/TransferForm';
-import { fetchAccounts } from '../utils/api';  // Importamos la función para obtener cuentas
+import { fetchAccounts } from '../utils/api';
 import { toast } from 'react-toastify';
 
 function Transactions() {
   const [accounts, setAccounts] = useState([]);
 
   useEffect(() => {
-    // Cargar cuentas al montar el componente
     loadAccounts();
   }, []);
 
@@ -28,10 +27,8 @@ function Transactions() {
       className="flex justify-center items-center h-screen bg-cover bg-center"
       style={{ backgroundImage: "url('/transfer.jpg')" }}
     >
-      {/* TransferForm Component */}
-      <TransferForm onTransferSuccess={loadAccounts} />
+      <TransferForm accounts={accounts} onTransferSuccess={loadAccounts} />
 
-      {/* Display list of accounts */}
       <div className="mt-6">
         {accounts.length > 0 ? (
           accounts.map((account) => (

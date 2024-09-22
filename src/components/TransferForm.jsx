@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { ClipLoader } from 'react-spinners'; // Usamos react-spinners para el loader
+import { ClipLoader } from 'react-spinners';
 
-const TransferForm = () => {
+const TransferForm = ({ accounts, onTransferSuccess }) => {
   const [formData, setFormData] = useState({
     sourceAccount: '',
     destinationAccount: '',
     amount: '',
     description: '',
   });
-
+  
+  const [isExternal, setIsExternal] = useState(false); // Estado para determinar si es cuenta externa
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // Estado para manejar el loader
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +23,11 @@ const TransferForm = () => {
     });
   };
 
-  // Validaciones antes de hacer la solicitud
+  const handleAccountTypeChange = () => {
+    setIsExternal(!isExternal); // Cambiar el estado al hacer clic
+    setFormData({ ...formData, destinationAccount: '' }); // Limpiar el campo de destino al cambiar
+  };
+
   const validateForm = () => {
     if (!formData.sourceAccount || !formData.destinationAccount) {
       return 'Las cuentas de origen y destino son obligatorias.';
@@ -40,7 +45,6 @@ const TransferForm = () => {
     e.preventDefault();
     setError(null);
 
-    // Validar el formulario
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
@@ -48,7 +52,7 @@ const TransferForm = () => {
     }
 
     try {
-      setLoading(true); // Mostrar el loader al empezar
+      setLoading(true);
       const token = localStorage.getItem('token');
 
       const response = await axios.post(
@@ -68,12 +72,13 @@ const TransferForm = () => {
 
       console.log('Transaction successful:', response.data);
       toast.success('Transacción exitosa');
+      onTransferSuccess(); // Reload accounts after successful transaction
     } catch (error) {
       setError(error.response?.data || error.message);
       console.error('Error details:', error.response?.data || error.message);
       toast.error('Error en la transacción');
     } finally {
-      setLoading(false); // Ocultar el loader al finalizar
+      setLoading(false);
     }
   };
 
@@ -87,15 +92,32 @@ const TransferForm = () => {
           <label htmlFor="sourceAccount" className="block text-sm font-medium text-white">
             Cuenta de Origen:
           </label>
-          <input
-            type="text"
+          <select
             id="sourceAccount"
             name="sourceAccount"
             value={formData.sourceAccount}
             onChange={handleInputChange}
             className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             required
-          />
+          >
+            <option value="">Selecciona una cuenta</option>
+            {accounts.map(account => (
+              <option key={account.id} value={account.number}>{account.number}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Opción para seleccionar cuenta externa */}
+        <div className="mb-4">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={isExternal}
+              onChange={handleAccountTypeChange}
+              className="mr-2"
+            />
+            Transferir a una cuenta externa
+          </label>
         </div>
 
         {/* Cuenta de Destino */}
@@ -103,15 +125,32 @@ const TransferForm = () => {
           <label htmlFor="destinationAccount" className="block text-sm font-medium text-white">
             Cuenta de Destino:
           </label>
-          <input
-            type="text"
-            id="destinationAccount"
-            name="destinationAccount"
-            value={formData.destinationAccount}
-            onChange={handleInputChange}
-            className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-            required
-          />
+          {isExternal ? (
+            <input
+              type="text"
+              id="destinationAccount"
+              name="destinationAccount"
+              value={formData.destinationAccount}
+              onChange={handleInputChange}
+              placeholder="Ingrese cuenta externa"
+              className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            />
+          ) : (
+            <select
+              id="destinationAccount"
+              name="destinationAccount"
+              value={formData.destinationAccount}
+              onChange={handleInputChange}
+              className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            >
+              <option value="">Selecciona una cuenta</option>
+              {accounts.map(account => (
+                <option key={account.id} value={account.number}>{account.number}</option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Monto */}
@@ -146,18 +185,16 @@ const TransferForm = () => {
           />
         </div>
 
-        {/* Botón de enviar con loader */}
         <button
           type="submit"
           className={`w-full py-3 px-4 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
             loading ? 'cursor-not-allowed opacity-70' : ''
           }`}
-          disabled={loading} // Deshabilitar el botón cuando esté cargando
+          disabled={loading}
         >
           {loading ? <ClipLoader size={20} color={"#ffffff"} /> : "Enviar Transferencia"}
         </button>
 
-        {/* Mensaje de error */}
         {error && <p className="mt-4 text-red-600">Error: {error}</p>}
       </form>
     </div>
@@ -165,3 +202,4 @@ const TransferForm = () => {
 };
 
 export default TransferForm;
+
