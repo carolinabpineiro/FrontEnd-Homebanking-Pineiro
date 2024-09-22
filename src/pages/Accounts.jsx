@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCurrentUser } from '../redux/actions/authActions';
 import axios from 'axios';
 import Carousel from '../components/Carousel';
 import Card from '../components/Card';
@@ -10,10 +12,13 @@ const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user); // Obtener el usuario actual
 
   useEffect(() => {
     fetchAccounts();
-  }, []);
+    dispatch(fetchCurrentUser()); // Llama a la acción para obtener el usuario actual
+  }, [dispatch]);
 
   const fetchAccounts = async () => {
     try {
@@ -48,7 +53,6 @@ const Accounts = () => {
 
       // Actualiza el estado local con la nueva cuenta
       setAccounts([...accounts, response.data]);
-
       toast.success("Account requested successfully!");
     } catch (err) {
       if (err.response && err.response.status === 403) {
@@ -59,22 +63,12 @@ const Accounts = () => {
     }
   };
 
-  const handleLoanApplied = (accountNumber, loanAmount) => {
-    setAccounts((prevAccounts) =>
-      prevAccounts.map((account) =>
-        account.number === accountNumber
-          ? { ...account, balance: account.balance + loanAmount }
-          : account
-      )
-    );
-  };
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
     <div>
-      <h1 className="text-4xl text-green-800 font-bold text-center py-8">Welcome, User!</h1>
+      <h1 className="text-4xl text-green-800 font-bold text-center py-8">Welcome, {user ? `${user.firstName} ${user.lastName}` : 'User'}!</h1>
       <Carousel />
       <div className="flex justify-center items-center space-x-4 mt-8 mb-8">
         <div className="py-4">
