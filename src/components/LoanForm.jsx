@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
-function LoanForm() {
+const LoanForm = ({ onLoanApplied }) => {
   const [loans, setLoans] = useState([]);
   const [selectedLoan, setSelectedLoan] = useState('');
   const [accounts, setAccounts] = useState([]);
@@ -22,7 +22,7 @@ function LoanForm() {
         setLoans(response.data);
       } catch (error) {
         console.error('Error fetching loans:', error);
-        toast.error('Error fetching loans: ' + error.response?.data || error.message);
+        toast.error('Error fetching loans');
       }
     };
 
@@ -36,20 +36,13 @@ function LoanForm() {
         setAccounts(response.data);
       } catch (error) {
         console.error('Error fetching accounts:', error);
-        toast.error('Error fetching accounts: ' + error.response?.data || error.message);
+        toast.error('Error fetching accounts');
       }
     };
 
     fetchLoans();
     fetchAccounts();
   }, [token]);
-
-  const handleLoanChange = (e) => {
-    const selectedId = e.target.value;
-    const selected = loans.find(loan => loan.id.toString() === selectedId); // Asegurarse de comparar correctamente
-    setSelectedLoan(selectedId);
-    setPayments(selected && selected.payments.length > 0 ? selected.payments[0] : ''); // Establece el primer pago disponible
-  };
 
   const handleApplyLoan = async () => {
     const loanData = {
@@ -65,8 +58,11 @@ function LoanForm() {
           Authorization: `Bearer ${token}`,
         },
       });
-      toast.success(response.data); // Notificación de éxito
-      // Aquí puedes actualizar el balance si es necesario
+      toast.success(response.data);
+
+      // Actualiza el balance en el componente padre (Accounts)
+      const loanAmount = parseFloat(amount);
+      onLoanApplied(selectedAccount, loanAmount);
     } catch (error) {
       console.error('Error applying for loan:', error);
       toast.error('Error applying for loan: ' + error.response.data);
@@ -78,7 +74,7 @@ function LoanForm() {
       <h2 className="text-xl font-semibold mb-4 text-white">Select Loan:</h2>
       <select
         value={selectedLoan}
-        onChange={handleLoanChange}
+        onChange={(e) => setSelectedLoan(e.target.value)}
         className="w-full p-2 mb-6 border border-gray-300 rounded-md"
       >
         <option value="">Select a loan</option>
@@ -135,6 +131,7 @@ function LoanForm() {
       </button>
     </div>
   );
-}
+};
 
 export default LoanForm;
+

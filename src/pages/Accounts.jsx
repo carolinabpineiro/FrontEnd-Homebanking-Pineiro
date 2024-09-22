@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import CustomButton from '../components/CustomButton';
-import Carousel from '../components/Carousel';
-import Card from '../components/Card';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Carousel from '../components/Carousel';
+import Card from '../components/Card';
+import CustomButton from '../components/CustomButton';
+import { toast } from 'react-toastify';
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
@@ -12,24 +12,25 @@ const Accounts = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:8080/api/accounts/current', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setAccounts(response.data);
-      } catch (err) {
-        console.error('Error fetching accounts:', err);
-        setError('Error fetching accounts');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchAccounts();
   }, []);
+
+  const fetchAccounts = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:8080/api/accounts/current', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setAccounts(response.data);
+    } catch (err) {
+      console.error('Error fetching accounts:', err);
+      setError('Error fetching accounts');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleRequestAccount = async () => {
     if (accounts.length >= 3) {
@@ -39,19 +40,16 @@ const Accounts = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:8080/api/accounts/current', {}, {
+      const response = await axios.post('http://localhost:8080/api/accounts/current', {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      // Actualiza el estado local con la nueva cuenta
+      setAccounts([...accounts, response.data]);
+
       toast.success("Account requested successfully!");
-      // Re-fetch accounts to show the updated list
-      const updatedAccounts = await axios.get('http://localhost:8080/api/accounts/current', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setAccounts(updatedAccounts.data);
     } catch (err) {
       if (err.response && err.response.status === 403) {
         toast.error(err.response.data);
@@ -59,6 +57,16 @@ const Accounts = () => {
         toast.error('Error requesting account');
       }
     }
+  };
+
+  const handleLoanApplied = (accountNumber, loanAmount) => {
+    setAccounts((prevAccounts) =>
+      prevAccounts.map((account) =>
+        account.number === accountNumber
+          ? { ...account, balance: account.balance + loanAmount }
+          : account
+      )
+    );
   };
 
   if (loading) return <p>Loading...</p>;
@@ -79,6 +87,7 @@ const Accounts = () => {
                 accountNumber={account.number}
                 amount={account.balance}
                 creationDate={account.creationDate}
+                updateBalance={() => handleLoanApplied(account.number, amount)} // Asegúrate de que 'amount' esté disponible
               />
             </Link>
           ))}
