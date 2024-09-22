@@ -10,22 +10,35 @@ const TransactionsResume = ({ transactions }) => {
             <th className="py-2 px-4 text-left text-gray-600">Type</th>
             <th className="py-2 px-4 text-left text-gray-600">Amount</th>
             <th className="py-2 px-4 text-left text-gray-600">Date</th>
-            <th className="py-2 px-4 text-left text-gray-600">Time</th>
-            <th className="py-2 px-4 text-left text-gray-600">Transcription</th>
+            <th className="py-2 px-4 text-left text-gray-600">Description</th>
           </tr>
         </thead>
         <tbody>
           {transactions.map((transaction, index) => {
-            const typeClass = transaction.type === 'DEBIT' ? 'text-green-600' : 'text-red-600';
+            // Ajustar colores: CREDIT en verde, DEBIT en rojo
+            const typeClass = transaction.transactionType === 'CREDIT' ? 'text-green-600' : 'text-red-600';
+
+            // Formateo de la fecha y hora
+            const formattedDate = new Date(transaction.dateTransaction).toLocaleString('es-AR', {
+              dateStyle: 'short',
+              timeStyle: 'short',
+            });
+
             return (
               <tr key={index} className="border-b border-gray-200">
-                <td className={`py-2 px-4 ${typeClass}`}>{transaction.type}</td>
+                {/* Tipo de transacción con color */}
+                <td className={`py-2 px-4 ${typeClass}`}>{transaction.transactionType}</td>
+
+                {/* Monto con formato monetario */}
                 <td className={`py-2 px-4 ${typeClass}`}>
                   {transaction.amount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}
                 </td>
-                <td className="py-2 px-4">{new Date(transaction.date).toLocaleDateString()}</td>
-                <td className="py-2 px-4">{new Date(transaction.date).toLocaleTimeString()}</td>
-                <td className="py-2 px-4">{transaction.transcription}</td>
+
+                {/* Fecha formateada */}
+                <td className="py-2 px-4">{formattedDate}</td>
+
+                {/* Descripción de la transacción */}
+                <td className="py-2 px-4">{transaction.description}</td>
               </tr>
             );
           })}

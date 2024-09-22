@@ -4,7 +4,6 @@ import axios from 'axios';
 import Card from "../components/Card";
 import TransactionsResume from '../components/TransactionsResume';
 import Carousel from '../components/Carousel';
-import { toast } from 'react-toastify';
 
 const Account = () => {
   const { id } = useParams(); // Obtiene el ID de la cuenta de los parámetros de la URL
@@ -30,12 +29,10 @@ const Account = () => {
         });
         setTransactions(transactionsResponse.data);
 
-        // Notificar que se ha actualizado la cuenta
-        toast.success('Account and transactions loaded successfully.');
+        // Ya no se utiliza Toastify para mostrar notificaciones
       } catch (err) {
         console.error('Error fetching account:', err);
         setError('Error fetching account or transactions.');
-        toast.error('Error fetching account or transactions.');
       } finally {
         setLoading(false);
       }
@@ -50,7 +47,7 @@ const Account = () => {
         ...prev,
         balance: newBalance,
       }));
-      toast.success('Balance updated successfully.');
+      // Ya no se utiliza Toastify para mostrar notificaciones
     }
   };
 
