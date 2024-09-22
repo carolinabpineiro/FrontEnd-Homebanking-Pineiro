@@ -1,99 +1,167 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { ClipLoader } from 'react-spinners'; // Usamos react-spinners para el loader
 
-function TransferForm() {
-  const [destinationType, setDestinationType] = useState('');
-  const [sourceAccount, setSourceAccount] = useState('account1');
-  const [destinationAccount, setDestinationAccount] = useState('');
+const TransferForm = () => {
+  const [formData, setFormData] = useState({
+    sourceAccount: '',
+    destinationAccount: '',
+    amount: '',
+    description: '',
+  });
 
-  const handleDestinationChange = (event) => {
-    setDestinationType(event.target.value);
-    setDestinationAccount('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Estado para manejar el loader
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // Validaciones antes de hacer la solicitud
+  const validateForm = () => {
+    if (!formData.sourceAccount || !formData.destinationAccount) {
+      return 'Las cuentas de origen y destino son obligatorias.';
+    }
+    if (formData.sourceAccount === formData.destinationAccount) {
+      return 'La cuenta de origen y destino no pueden ser la misma.';
+    }
+    if (parseFloat(formData.amount) <= 0 || isNaN(parseFloat(formData.amount))) {
+      return 'El monto debe ser un número positivo.';
+    }
+    return null;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    // Validar el formulario
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    try {
+      setLoading(true); // Mostrar el loader al empezar
+      const token = localStorage.getItem('token');
+
+      const response = await axios.post(
+        'http://localhost:8080/api/transactions',
+        {
+          sourceAccount: formData.sourceAccount,
+          destinationAccount: formData.destinationAccount,
+          amount: parseFloat(formData.amount),
+          description: formData.description,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+
+      console.log('Transaction successful:', response.data);
+      toast.success('Transacción exitosa');
+    } catch (error) {
+      setError(error.response?.data || error.message);
+      console.error('Error details:', error.response?.data || error.message);
+      toast.error('Error en la transacción');
+    } finally {
+      setLoading(false); // Ocultar el loader al finalizar
+    }
   };
 
   return (
-    <div className="bg-green-700 opacity-90 p-16 rounded-lg shadow-lg w-1/2">
-      {/* Formulario de transacción */}
-      <div className="p-8 flex flex-col justify-center">
-        <h2 className="text-xl font-semibold mb-4 text-white">Destination Type</h2>
-        <div className="mb-6">
-          <label className="inline-flex items-center text-white">
-            <input
-              type="radio"
-              name="destinationType"
-              value="own"
-              className="form-radio"
-              checked={destinationType === 'own'}
-              onChange={handleDestinationChange}
-            />
-            <span className="ml-2">Own</span>
+    <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg max-w-lg mx-auto">
+      <form onSubmit={handleSubmit} className="p-6 flex flex-col justify-center">
+        <h2 className="text-3xl font-bold text-center text-white mb-6">Transferencia Bancaria</h2>
+
+        {/* Cuenta de Origen */}
+        <div className="mb-4">
+          <label htmlFor="sourceAccount" className="block text-sm font-medium text-white">
+            Cuenta de Origen:
           </label>
-          <label className="inline-flex items-center ml-4 text-white">
-            <input
-              type="radio"
-              name="destinationType"
-              value="others"
-              className="form-radio"
-              checked={destinationType === 'others'}
-              onChange={handleDestinationChange}
-            />
-            <span className="ml-2">Others</span>
-          </label>
+          <input
+            type="text"
+            id="sourceAccount"
+            name="sourceAccount"
+            value={formData.sourceAccount}
+            onChange={handleInputChange}
+            className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            required
+          />
         </div>
 
-        <h2 className="text-xl font-semibold mb-4 text-white">Source Account</h2>
-        <select
-          className="w-full p-3 mb-6 border border-gray-300 rounded-md"
-          value={sourceAccount}
-          onChange={(e) => setSourceAccount(e.target.value)}
+        {/* Cuenta de Destino */}
+        <div className="mb-4">
+          <label htmlFor="destinationAccount" className="block text-sm font-medium text-white">
+            Cuenta de Destino:
+          </label>
+          <input
+            type="text"
+            id="destinationAccount"
+            name="destinationAccount"
+            value={formData.destinationAccount}
+            onChange={handleInputChange}
+            className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            required
+          />
+        </div>
+
+        {/* Monto */}
+        <div className="mb-4">
+          <label htmlFor="amount" className="block text-sm font-medium text-white">
+            Monto:
+          </label>
+          <input
+            type="number"
+            id="amount"
+            name="amount"
+            value={formData.amount}
+            onChange={handleInputChange}
+            className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            required
+          />
+        </div>
+
+        {/* Descripción */}
+        <div className="mb-4">
+          <label htmlFor="description" className="block text-sm font-medium text-white">
+            Descripción:
+          </label>
+          <input
+            type="text"
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            required
+          />
+        </div>
+
+        {/* Botón de enviar con loader */}
+        <button
+          type="submit"
+          className={`w-full py-3 px-4 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+            loading ? 'cursor-not-allowed opacity-70' : ''
+          }`}
+          disabled={loading} // Deshabilitar el botón cuando esté cargando
         >
-          <option value="account1">Account 1</option>
-          <option value="account2">Account 2</option>
-        </select>
-
-        {destinationType && (
-          <div className="flex items-center mb-6">
-            <h2 className="text-xl font-semibold mb-4 text-white">Destination Account</h2>
-            <span className="mx-3 text-3xl text-white">→</span>
-            <select
-              className="w-full p-3 border border-gray-300 rounded-md"
-              value={destinationAccount}
-              onChange={(e) => setDestinationAccount(e.target.value)}
-            >
-              {destinationType === 'own' ? (
-                <>
-                  <option value="account1">Account 1</option>
-                  <option value="account2">Account 2</option>
-                </>
-              ) : (
-                <>
-                  <option value="externalAccount1">External Account 1</option>
-                  <option value="externalAccount2">External Account 2</option>
-                </>
-              )}
-            </select>
-          </div>
-        )}
-
-        <h2 className="text-xl font-semibold mb-4 text-white">Amount</h2>
-        <input
-          type="text"
-          placeholder="Enter Amount"
-          className="w-full p-3 mb-6 border border-gray-300 rounded-md"
-        />
-
-        <h2 className="text-xl font-semibold mb-4 text-white">Description</h2>
-        <input
-          type="text"
-          placeholder="Enter Description"
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
-
-        <button className="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300">
-          Make Transaction
+          {loading ? <ClipLoader size={20} color={"#ffffff"} /> : "Enviar Transferencia"}
         </button>
-      </div>
+
+        {/* Mensaje de error */}
+        {error && <p className="mt-4 text-red-600">Error: {error}</p>}
+      </form>
     </div>
   );
-}
+};
 
 export default TransferForm;
