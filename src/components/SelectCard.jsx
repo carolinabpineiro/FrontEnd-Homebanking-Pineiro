@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import CustomButton from './CustomButton';
+import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
 
 function SelectCard({ onApply }) {
   const [cardType, setCardType] = useState('credit');
   const [cardColor, setCardColor] = useState('silver');
+  const navigate = useNavigate(); // Creamos el hook para navegar
 
   const handleApply = () => {
     const newCard = {
@@ -11,6 +13,10 @@ function SelectCard({ onApply }) {
       color: cardColor,
     };
     onApply(newCard);
+  };
+
+  const handleCancel = () => {
+    navigate('/cards'); // Redirigir a la página de cards
   };
 
   return (
@@ -39,7 +45,7 @@ function SelectCard({ onApply }) {
 
         <div className="flex justify-center space-x-4 pt-6">
           <CustomButton text="Apply" bgColor="bg-green-600" hoverColor="hover:bg-green-800" textColor="text-white" onClick={handleApply} />
-          <CustomButton text="Cancel" bgColor="bg-red-500" hoverColor="hover:bg-red-700" textColor="text-white" />
+          <CustomButton text="Cancel" bgColor="bg-red-500" hoverColor="hover:bg-red-700" textColor="text-white" onClick={handleCancel} /> {/* Agregamos handleCancel */}
         </div>
       </div>
     </div>

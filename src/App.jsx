@@ -9,6 +9,7 @@ import Cards from './pages/Cards';
 import ApplyCard from './pages/ApplyCard';
 import Loans from './pages/Loans';
 import Transactions from './pages/Transactions';
+import Logout from './pages/Logout';
 import { ToastContainer } from 'react-toastify'; // Importamos ToastContainer
 import 'react-toastify/dist/ReactToastify.css'; // Importamos los estilos de Toastify
 
@@ -30,6 +31,8 @@ function App() {
           <Route path="loans" element={<Loans />} />
           <Route path="transactions" element={<Transactions />} />
         </Route>
+        {/* Ruta para Logout */}
+        <Route path="/logout" element={<Logout />} /> 
       </Routes>
     </Router>
   );

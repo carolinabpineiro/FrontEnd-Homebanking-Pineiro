@@ -42,10 +42,10 @@ function Nav() {
 
       {/* Icono de Logout */}
       <div className="ml-4">
-        <Link to="/logout">
-          <img src="/public/logout.png" alt="Logout" className="h-12 w-auto" />
-        </Link>
-      </div>
+  <Link to="/logout">
+    <img src="/public/logout.png" alt="Logout" className="h-12 w-auto cursor-pointer" />
+  </Link>
+</div>
     </nav>
   );
 }
