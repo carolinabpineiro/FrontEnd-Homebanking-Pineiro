@@ -133,4 +133,3 @@ const Accounts = () => {
 };
 
 export default Accounts;
-gi

@@ -34,7 +34,7 @@ const FormRegister = () => {
       <div className="bg-green-700 opacity-95 p-24 rounded-lg shadow-lg w-1/2">
         <div className="flex flex-col items-center mb-8">
           <img src="/logo.png" alt="Logo" className="w-24 mb-2" />
-          <h1 className="font-bold text-white">BANKING 55</h1>
+          <h1 className="text-4xl font-extrabold text-white md:text-4xl">BANKING 55</h1>
         </div>
 
         <form onSubmit={handleRegister}>
