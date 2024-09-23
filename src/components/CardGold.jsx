@@ -13,7 +13,7 @@ function CardGold({ card }) {
           <img src="/visa.png" alt="Visa" className="w-16" />
         </div>
 
-        <div className="text-xl font-bold tracking-wider flex justify-center text-shadow" style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.7)' }}>
+        <div className="text-3xl font-bold tracking-widest flex justify-center text-shadow" style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.7)' }}>
           {cardNumber}
         </div>
 

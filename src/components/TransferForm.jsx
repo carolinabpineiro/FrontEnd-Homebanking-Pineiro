@@ -202,7 +202,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           {loading ? <ClipLoader size={20} color={"#ffffff"} /> : "Submit Transfer"}
         </button>
 
-        {error && <p className="mt-4 text-red-600">Error: {error}</p>}
+        {error && <p className="mt-4 text-red-700 text-bold text-center text-lg">Error: {error}</p>}
       </form>
     </div>
   );

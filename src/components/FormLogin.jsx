@@ -30,11 +30,11 @@ const FormLogin = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="bg-green-700 opacity-95 p-24 rounded-lg shadow-lg w-1/2">
+    <div className="flex justify-center items-center h-screen p-4">
+      <div className="bg-green-700 opacity-95 p-6 md:p-12 rounded-lg shadow-lg w-full md:w-1/2">
         <div className="flex flex-col items-center mb-8">
           <img src="/logo.png" alt="Logo" className="w-24 mb-2" />
-          <h1 className="text-4xl font-extrabold text-white md:text-4xl">BANKING 55</h1>
+          <h1 className="text-2xl md:text-4xl font-extrabold text-white">BANKING 55</h1>
         </div>
         <form onSubmit={handleLogin}>
           <div className="mb-6">
@@ -87,3 +87,4 @@ const FormLogin = () => {
 };
 
 export default FormLogin;
+
