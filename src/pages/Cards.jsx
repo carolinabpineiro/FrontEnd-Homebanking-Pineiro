@@ -45,12 +45,19 @@ function Cards() {
 
   const creditCards = cards.filter(card => card.cardType === 'CREDIT');
   const debitCards = cards.filter(card => card.cardType === 'DEBIT');
+  
+  // Calcular el total de tarjetas
+  const totalCards = cards.length;
 
   return (
     <div className="p-4 bg-cover bg-center h-screen" style={{ backgroundImage: "url('/Tarjeta_online.jpg')" }}>
       <div className="text-center">
         <h1 className="text-3xl font-bold mb-8 mt-8 text-green-800">Your Cards</h1>
-        <CustomButton text="Apply for a card" redirectTo="/apply-card" />
+        {totalCards < 6 ? (
+          <CustomButton text="Apply for a card" redirectTo="/apply-card" />
+        ) : (
+          <p className="text-red-500 py-4">You have reached the maximum limit of 6 cards.</p>
+        )}
       </div>
 
       <div className="flex flex-col mt-10">

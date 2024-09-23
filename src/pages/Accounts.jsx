@@ -103,10 +103,12 @@ const Accounts = () => {
       </h1>
       <Carousel />
       <div className="flex justify-center items-center space-x-4 mt-8 mb-8 flex-wrap">
-        {accounts.length < 3 && (
+        {accounts.length < 3 ? (
           <div className="py-4">
             <CustomButton text="Request Account" onClick={handleRequestAccount} />
           </div>
+        ) : (
+          <p className="text-red-500 py-4">You have reached the limit of 3 accounts.</p>
         )}
         <div className="flex flex-wrap justify-center">
           {accounts.map(account => (
