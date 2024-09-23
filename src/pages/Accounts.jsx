@@ -14,11 +14,11 @@ const Accounts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user); // Obtener el usuario actual
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     fetchAccounts();
-    dispatch(fetchCurrentUser()); // Llama a la acción para obtener el usuario actual
+    dispatch(fetchCurrentUser());
   }, [dispatch]);
 
   const fetchAccounts = async () => {
@@ -51,8 +51,6 @@ const Accounts = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      // Actualiza el estado local con la nueva cuenta
       setAccounts([...accounts, response.data]);
       toast.success("Account requested successfully!");
     } catch (err) {
@@ -74,7 +72,7 @@ const Accounts = () => {
       cancelButtonText: "No, cancel!",
     });
 
-    if (!confirmDelete.isConfirmed) return; // Si el usuario cancela, no hacemos nada
+    if (!confirmDelete.isConfirmed) return;
 
     try {
       const token = localStorage.getItem('token');
@@ -84,12 +82,11 @@ const Accounts = () => {
         },
       });
 
-      // Actualiza el estado para eliminar la cuenta
       setAccounts(accounts.filter(account => account.id !== id));
       toast.success("Account deleted successfully!");
     } catch (err) {
       if (err.response) {
-        toast.error(err.response.data); // Mostrar el mensaje de error del servidor
+        toast.error(err.response.data);
       } else {
         toast.error('Error deleting account');
       }
@@ -105,15 +102,15 @@ const Accounts = () => {
         Welcome, {user ? `${user.firstName} ${user.lastName}` : 'User'}!
       </h1>
       <Carousel />
-      <div className="flex justify-center items-center space-x-4 mt-8 mb-8">
-        {accounts.length < 3 && ( // Solo muestra el botón si hay menos de 3 cuentas
+      <div className="flex justify-center items-center space-x-4 mt-8 mb-8 flex-wrap">
+        {accounts.length < 3 && (
           <div className="py-4">
             <CustomButton text="Request Account" onClick={handleRequestAccount} />
           </div>
         )}
-        <div className="flex space-x-4">
+        <div className="flex flex-wrap justify-center">
           {accounts.map(account => (
-            <div key={account.id} className="flex flex-col items-center">
+            <div key={account.id} className="flex flex-col items-center mb-4">
               <Link to={`/account/${account.id}`} className="flex-none">
                 <Card
                   accountNumber={account.number}
@@ -136,3 +133,4 @@ const Accounts = () => {
 };
 
 export default Accounts;
+gi
