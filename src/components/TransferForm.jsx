@@ -3,7 +3,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 
-
 const TransferForm = ({ accounts, onTransferSuccess }) => {
   const [formData, setFormData] = useState({
     sourceAccount: '',
@@ -84,7 +83,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
   };
 
   return (
-    <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg w-1/2 mx-auto"> {/* Ajustado al 50% de ancho */}
+    <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg w-1/2 mx-auto">
       <form onSubmit={handleSubmit} className="p-6 flex flex-col justify-center">
         <h2 className="text-3xl font-bold text-center text-white mb-6">Make a Transaction</h2>
 
@@ -103,7 +102,9 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           >
             <option value="">Select an account</option>
             {accounts.map(account => (
-              <option key={account.id} value={account.number}>{account.number}</option>
+              <option key={account.id} value={account.number}>
+                {account.number} - Balance: {account.balance}
+              </option>
             ))}
           </select>
         </div>
@@ -148,7 +149,12 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             >
               <option value="">Select an account</option>
               {accounts.map(account => (
-                <option key={account.id} value={account.number}>{account.number}</option>
+                // Solo muestra la cuenta si no es la misma que la fuente
+                formData.sourceAccount !== account.number && (
+                  <option key={account.id} value={account.number}>
+                    {account.number} - Balance: {account.balance}
+                  </option>
+                )
               ))}
             </select>
           )}

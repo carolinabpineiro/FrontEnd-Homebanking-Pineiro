@@ -7,6 +7,7 @@ import Carousel from '../components/Carousel';
 import Card from '../components/Card';
 import CustomButton from '../components/CustomButton';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
@@ -64,6 +65,17 @@ const Accounts = () => {
   };
 
   const handleDeleteAccount = async (id) => {
+    const confirmDelete = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+    });
+
+    if (!confirmDelete.isConfirmed) return; // Si el usuario cancela, no hacemos nada
+
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`http://localhost:8080/api/accounts/${id}`, {
@@ -89,25 +101,30 @@ const Accounts = () => {
 
   return (
     <div>
-      <h1 className="text-4xl text-green-800 font-bold text-center py-8">Welcome, {user ? `${user.firstName} ${user.lastName}` : 'User'}!</h1>
+      <h1 className="text-4xl text-green-800 font-bold text-center py-8">
+        Welcome, {user ? `${user.firstName} ${user.lastName}` : 'User'}!
+      </h1>
       <Carousel />
       <div className="flex justify-center items-center space-x-4 mt-8 mb-8">
-        <div className="py-4">
-          <CustomButton text="Request Account" onClick={handleRequestAccount} />
-        </div>
+        {accounts.length < 3 && ( // Solo muestra el botón si hay menos de 3 cuentas
+          <div className="py-4">
+            <CustomButton text="Request Account" onClick={handleRequestAccount} />
+          </div>
+        )}
         <div className="flex space-x-4">
           {accounts.map(account => (
-            <div key={account.id} className="flex-none">
-              <Link to={`/account/${account.id}`}>
+            <div key={account.id} className="flex flex-col items-center">
+              <Link to={`/account/${account.id}`} className="flex-none">
                 <Card
                   accountNumber={account.number}
                   amount={account.balance}
                   creationDate={account.creationDate}
                 />
               </Link>
-              <button 
-                onClick={() => handleDeleteAccount(account.id)} 
-                className="text-red-500 mt-2">
+              <button
+                className="mt-2 bg-red-500 text-white p-2 rounded"
+                onClick={() => handleDeleteAccount(account.id)}
+              >
                 Delete Account
               </button>
             </div>

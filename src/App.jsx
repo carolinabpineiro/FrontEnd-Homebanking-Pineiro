@@ -17,6 +17,7 @@ function App() {
   return (
     <Router>
       <ToastContainer /> {/* Añadimos el contenedor de Toastify */}
+     
       <Routes>
         {/* Rutas públicas */}
         <Route path="/" element={<Login />} />
