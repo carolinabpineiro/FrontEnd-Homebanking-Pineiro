@@ -45,7 +45,7 @@ const FormLogin = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Ingresa tu email"
+              placeholder="Enter your email"
               required
             />
           </div>
@@ -57,24 +57,25 @@ const FormLogin = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Ingresa tu contraseña"
+              placeholder="Enter your password"
               required
+              minLength="4"
             />
           </div>
-          {status === 'failed' && <p className="text-red-700 text-lg font-semibold">{error}</p>} {/* Cambios aquí */}
+          {status === 'failed' && <p className="text-red-700 text-lg font-semibold">{error}</p>} 
           <div>
             <button
               type="submit"
               className="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300"
               disabled={status === 'loading'}
             >
-              {status === 'loading' ? 'Iniciando sesión...' : 'Login'}
+              {status === 'loading' ? 'Logging in...' : 'Login'}
             </button>
           </div>
         </form>
         <div className="mt-6 text-center">
           <p className="text-gray-200">
-            ¿No tienes cuenta?
+            Don't have an account?
             <span className="text-blue-400 cursor-pointer hover:underline ml-2" onClick={handleRegister}>
               Register
             </span>

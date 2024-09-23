@@ -63,6 +63,27 @@ const Accounts = () => {
     }
   };
 
+  const handleDeleteAccount = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:8080/api/accounts/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Actualiza el estado para eliminar la cuenta
+      setAccounts(accounts.filter(account => account.id !== id));
+      toast.success("Account deleted successfully!");
+    } catch (err) {
+      if (err.response) {
+        toast.error(err.response.data); // Mostrar el mensaje de error del servidor
+      } else {
+        toast.error('Error deleting account');
+      }
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -76,14 +97,20 @@ const Accounts = () => {
         </div>
         <div className="flex space-x-4">
           {accounts.map(account => (
-            <Link key={account.id} to={`/account/${account.id}`} className="flex-none">
-              <Card
-                accountNumber={account.number}
-                amount={account.balance}
-                creationDate={account.creationDate}
-                updateBalance={() => handleLoanApplied(account.number, amount)} // Asegúrate de que 'amount' esté disponible
-              />
-            </Link>
+            <div key={account.id} className="flex-none">
+              <Link to={`/account/${account.id}`}>
+                <Card
+                  accountNumber={account.number}
+                  amount={account.balance}
+                  creationDate={account.creationDate}
+                />
+              </Link>
+              <button 
+                onClick={() => handleDeleteAccount(account.id)} 
+                className="text-red-500 mt-2">
+                Delete Account
+              </button>
+            </div>
           ))}
         </div>
       </div>

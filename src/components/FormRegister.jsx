@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store'; 
 import { register } from '../redux/actions/authActions';
-import { toast } from 'react-toastify';
 
 const FormRegister = () => {
   const [firstName, setFirstName] = useState('');
@@ -19,18 +18,7 @@ const FormRegister = () => {
     try {
       const result = await dispatch(register({ firstName, lastName, email, password }));
       if (result.type === 'auth/register/fulfilled') {
-        toast.success('Account created successfully! You will be redirected to login.', {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-
-        setTimeout(() => {
-          navigate('/'); 
-        }, 3000);
+        navigate('/'); 
       }
     } catch (err) {
       console.log('Error during registration', err);
@@ -38,7 +26,7 @@ const FormRegister = () => {
   };
 
   const handleLogin = () => {
-    navigate('/');
+    navigate('/'); 
   };
 
   return (
@@ -98,11 +86,12 @@ const FormRegister = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
+              minLength="4"
               required
             />
           </div>
 
-          {status === 'failed' && <p className="text-red-700 text-lg font-semibold">{error}</p>} {/* Cambios aquí */}
+          {status === 'failed' && <p className="text-red-700 text-lg font-semibold">{error}</p>} 
 
           <div>
             <button

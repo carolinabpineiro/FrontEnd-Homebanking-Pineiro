@@ -11,20 +11,19 @@ export const login = createAsyncThunk(
       const response = await axios.post(`${API_URL}/login`, credentials);
       
       console.log('Response completa:', response); 
-      console.log('Response data (token):', response.data); // Aquí el token
+      console.log('Response data (token):', response.data); 
 
-      // Ya no estamos buscando "response.data.token", simplemente tomamos el "response.data"
       const token = response.data;
 
       if (!token) {
-        throw new Error('Token no encontrado en la respuesta');
+        throw new Error('Token not found in the response'); // Mensaje en inglés
       }
 
       localStorage.setItem('token', token);
-      return { token }; // Retorna solo el token
+      return { token }; 
     } catch (error) {
-      console.error('Error en la autenticación:', error);
-      return rejectWithValue(error.response?.data || 'Error en la autenticación');
+      console.error('Authentication error:', error);
+      return rejectWithValue(error.response?.data || 'Authentication error'); // Mensaje en inglés
     }
   }
 );
@@ -35,11 +34,11 @@ export const register = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/signup`, credentials);
-      console.log('Registro exitoso:', response.data); // Verifica la respuesta
-      return response.data; // Retorna la respuesta
+      console.log('Registration successful:', response.data); 
+      return response.data; 
     } catch (error) {
-      console.error('Error en el registro:', error);
-      return rejectWithValue(error.response?.data || 'Error en el registro');
+      console.error('Registration error:', error);
+      return rejectWithValue(error.response?.data || 'Registration error'); // Mensaje en inglés
     }
   }
 );
@@ -53,9 +52,9 @@ export const fetchCurrentUser = createAsyncThunk(
       const response = await axios.get(`${API_URL}/current`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return response.data; // Retorna los datos del usuario
+      return response.data; 
     } catch (error) {
-      return rejectWithValue(error.response?.data || 'Error al obtener el usuario');
+      return rejectWithValue(error.response?.data || 'Error fetching current user'); // Mensaje en inglés
     }
   }
 );
