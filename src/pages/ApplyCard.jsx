@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SelectCard from '../components/SelectCard';
 import { toast } from 'react-toastify';
-import { setCards, addCard } from '../redux/actions/cardAction'; // Asegúrate de importar setCards para actualizar las tarjetas
+import { setCards } from '../redux/actions/cardAction'; // Asegúrate de importar setCards para actualizar las tarjetas
 import axios from 'axios';
 
 function ApplyCard() {
@@ -56,7 +56,7 @@ function ApplyCard() {
       });
 
       toast.success('Card application successful!');
-      
+
       // Actualizar el estado local y global después de crear una tarjeta
       const updatedCardsResponse = await axios.get('http://localhost:8080/api/clients/current/cards', {
         headers: {
@@ -77,8 +77,11 @@ function ApplyCard() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-cover bg-center" style={{ backgroundImage: "url('/abuela-nieta.jpg')" }}>
-      <SelectCard onApply={handleCardApplication} />
+    <div className="flex flex-col h-screen bg-cover bg-center" style={{ backgroundImage: "url('/abuela-nieta.jpg')" }}>
+      
+      <div className="flex-grow flex items-start justify-center mt-32"> {/* Alineado hacia la parte superior */}
+        <SelectCard onApply={handleCardApplication} />
+      </div>
     </div>
   );
 }

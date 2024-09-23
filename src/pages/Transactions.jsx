@@ -24,22 +24,11 @@ function Transactions() {
 
   return (
     <div
-      className="flex justify-center items-center h-screen bg-cover bg-center"
+      className="flex flex-col h-screen bg-cover bg-center"
       style={{ backgroundImage: "url('/transfer.jpg')" }}
     >
-      <TransferForm accounts={accounts} onTransferSuccess={loadAccounts} />
-
-      <div className="mt-6">
-        {accounts.length > 0 ? (
-          accounts.map((account) => (
-            <div key={account.id} className="text-white mb-2">
-              <h3>{account.number}</h3>
-              <p>Balance: ${account.balance}</p>
-            </div>
-          ))
-        ) : (
-          <p className="text-white">No accounts available</p>
-        )}
+      <div className="flex-grow flex items-start justify-center mt-32"> {/* Alineado hacia la parte superior */}
+        <TransferForm accounts={accounts} onTransferSuccess={loadAccounts} />
       </div>
     </div>
   );

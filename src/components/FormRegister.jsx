@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store'; 
 import { register } from '../redux/actions/authActions';
-import { toast } from 'react-toastify'; // Importar react-toastify
+import { toast } from 'react-toastify';
 
 const FormRegister = () => {
   const [firstName, setFirstName] = useState('');
@@ -19,20 +19,17 @@ const FormRegister = () => {
     try {
       const result = await dispatch(register({ firstName, lastName, email, password }));
       if (result.type === 'auth/register/fulfilled') {
-        // Mostrar mensaje de éxito con react-toastify
         toast.success('Account created successfully! You will be redirected to login.', {
           position: "top-right",
-          autoClose: 3000, // Cierra automáticamente el toast después de 3 segundos
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-          progress: undefined,
         });
 
-        // Redirigir al login después de 3 segundos
         setTimeout(() => {
-          navigate('/'); // Redirige al login
+          navigate('/'); 
         }, 3000);
       }
     } catch (err) {
@@ -41,12 +38,12 @@ const FormRegister = () => {
   };
 
   const handleLogin = () => {
-    navigate('/'); // Redirigir al login
+    navigate('/');
   };
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="bg-green-700 opacity-90 p-24 rounded-lg shadow-lg w-1/2">
+      <div className="bg-green-700 opacity-95 p-24 rounded-lg shadow-lg w-1/2">
         <div className="flex flex-col items-center mb-8">
           <img src="/logo.png" alt="Logo" className="w-24 mb-2" />
           <h1 className="font-bold text-white">BANKING 55</h1>
@@ -105,7 +102,7 @@ const FormRegister = () => {
             />
           </div>
 
-          {status === 'failed' && <p className="text-red-500 text-sm">{error}</p>}
+          {status === 'failed' && <p className="text-red-700 text-lg font-semibold">{error}</p>} {/* Cambios aquí */}
 
           <div>
             <button

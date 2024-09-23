@@ -13,8 +13,6 @@ const FormLogin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    // Limpia las tarjetas almacenadas al iniciar sesión
     localStorage.removeItem('cards');
 
     try {
@@ -33,7 +31,7 @@ const FormLogin = () => {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="bg-green-700 opacity-90 p-24 rounded-lg shadow-lg w-1/2">
+      <div className="bg-green-700 opacity-95 p-24 rounded-lg shadow-lg w-1/2">
         <div className="flex flex-col items-center mb-8">
           <img src="/logo.png" alt="Logo" className="w-24 mb-2" />
           <h1 className="font-bold text-white">BANKING 55</h1>
@@ -63,7 +61,7 @@ const FormLogin = () => {
               required
             />
           </div>
-          {status === 'failed' && <p className="text-red-500 text-sm">{error}</p>}
+          {status === 'failed' && <p className="text-red-700 text-lg font-semibold">{error}</p>} {/* Cambios aquí */}
           <div>
             <button
               type="submit"

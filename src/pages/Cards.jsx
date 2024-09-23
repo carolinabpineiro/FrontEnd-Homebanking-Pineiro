@@ -54,25 +54,29 @@ function Cards() {
       </div>
 
       <div className="flex flex-col mt-10">
-        <h2 className="text-2xl font-bold mb-4 text-green-600">Credit Cards</h2>
-        <div className="ml-24 flex flex-wrap gap-4 mb-8">
+        <h2 className="text-2xl font-bold mb-4 text-green-600 text-center">Credit Cards</h2>
+        <div className="flex justify-center flex-wrap gap-4 mb-8">
           {creditCards.length > 0 ? (
             creditCards.map(card => (
               <CardComponent key={card.id} card={card} />
             ))
           ) : (
-            <p className="text-gray-700">You can apply for a credit card if you don't have one yet.</p>
+            <p className="text-gray-700 p-6 bg-white bg-opacity-80 rounded-lg shadow-lg text-center">
+              You can apply for a credit card if you don't have one yet.
+            </p>
           )}
         </div>
 
-        <h2 className="text-2xl font-bold mb-4 text-green-600">Debit Cards</h2>
-        <div className="ml-24 flex flex-wrap gap-4">
+        <h2 className="text-2xl font-bold mb-4 text-green-600 text-center">Debit Cards</h2>
+        <div className="flex justify-center flex-wrap gap-4">
           {debitCards.length > 0 ? (
             debitCards.map(card => (
               <CardComponent key={card.id} card={card} />
             ))
           ) : (
-            <p className="text-gray-700">You can apply for a debit card if you don't have one yet.</p>
+            <p className="text-gray-700 p-6 bg-white bg-opacity-80 rounded-lg shadow-lg text-center">
+              You can apply for a debit card if you don't have one yet.
+            </p>
           )}
         </div>
       </div>

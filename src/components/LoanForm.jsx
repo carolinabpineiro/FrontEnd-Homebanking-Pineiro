@@ -9,6 +9,7 @@ const LoanForm = ({ onLoanApplied }) => {
   const [selectedAccount, setSelectedAccount] = useState('');
   const [amount, setAmount] = useState('');
   const [payments, setPayments] = useState('');
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -53,6 +54,7 @@ const LoanForm = ({ onLoanApplied }) => {
     };
 
     try {
+      setLoading(true);
       const response = await axios.post('http://localhost:8080/api/loans/apply', loanData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -60,22 +62,24 @@ const LoanForm = ({ onLoanApplied }) => {
       });
       toast.success(response.data);
 
-      // Actualiza el balance en el componente padre (Accounts)
       const loanAmount = parseFloat(amount);
       onLoanApplied(selectedAccount, loanAmount);
     } catch (error) {
       console.error('Error applying for loan:', error);
       toast.error('Error applying for loan: ' + error.response.data);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="bg-green-700 opacity-90 p-24 rounded-lg shadow-lg w-1/2">
-      <h2 className="text-xl font-semibold mb-4 text-white">Select Loan:</h2>
+    <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg w-3/4 mx-auto"> {/* Ajustado al 75% de ancho */}
+      <h2 className="text-3xl font-bold text-center text-white mb-6">Apply for a Loan</h2>
+
       <select
         value={selectedLoan}
         onChange={(e) => setSelectedLoan(e.target.value)}
-        className="w-full p-2 mb-6 border border-gray-300 rounded-md"
+        className="w-full p-3 mb-6 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
       >
         <option value="">Select a loan</option>
         {loans.map((loan) => (
@@ -85,11 +89,10 @@ const LoanForm = ({ onLoanApplied }) => {
         ))}
       </select>
 
-      <h2 className="text-xl font-semibold mb-4 text-white">Source Account:</h2>
       <select
         value={selectedAccount}
         onChange={(e) => setSelectedAccount(e.target.value)}
-        className="w-full p-2 mb-6 border border-gray-300 rounded-md"
+        className="w-full p-3 mb-6 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
       >
         <option value="">Select an account</option>
         {accounts.map((account) => (
@@ -99,21 +102,20 @@ const LoanForm = ({ onLoanApplied }) => {
         ))}
       </select>
 
-      <h2 className="text-xl font-semibold mb-4 text-white">Amount:</h2>
       <input
         type="text"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         placeholder="Enter Amount"
-        className="w-full p-2 mb-6 border border-gray-300 rounded-md"
+        className="w-full p-3 mb-6 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
       />
 
-      <h2 className="text-xl font-semibold mb-4 text-white">Payment:</h2>
       <select
         value={payments}
         onChange={(e) => setPayments(e.target.value)}
-        className="w-full p-2 mb-6 border border-gray-300 rounded-md"
+        className="w-full p-3 mb-6 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
       >
+        <option value="">Select number of payments</option>
         {selectedLoan && loans.length > 0 && (
           loans.find(loan => loan.id.toString() === selectedLoan)?.payments.map((payment) => (
             <option key={payment} value={payment}>
@@ -125,13 +127,13 @@ const LoanForm = ({ onLoanApplied }) => {
 
       <button
         onClick={handleApplyLoan}
-        className="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300"
+        className={`w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300 ${loading ? 'cursor-not-allowed opacity-70' : ''}`}
+        disabled={loading}
       >
-        Apply for Loan
+        {loading ? 'Loading...' : 'Apply'}
       </button>
     </div>
   );
 };
 
 export default LoanForm;
-

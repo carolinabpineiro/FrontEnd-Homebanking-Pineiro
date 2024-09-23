@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import CustomButton from './CustomButton';
-import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
+import { useNavigate } from 'react-router-dom';
 
 function SelectCard({ onApply }) {
   const [cardType, setCardType] = useState('credit');
   const [cardColor, setCardColor] = useState('silver');
-  const navigate = useNavigate(); // Creamos el hook para navegar
+  const navigate = useNavigate();
 
   const handleApply = () => {
     const newCard = {
@@ -16,12 +16,14 @@ function SelectCard({ onApply }) {
   };
 
   const handleCancel = () => {
-    navigate('/cards'); // Redirigir a la página de cards
+    navigate('/cards');
   };
 
   return (
-    <div className="bg-green-700 opacity-90 p-16 rounded-lg shadow-lg w-1/2">
-      <div className="flex flex-col justify-center">
+    <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg w-1/2 mx-auto"> {/* Ajustado al 50% de ancho */}
+      <form onSubmit={(e) => e.preventDefault()} className="p-6 flex flex-col justify-center">
+        <h2 className="text-3xl font-bold text-center text-white mb-6">Apply for a Card</h2>
+
         <h2 className="text-xl font-semibold mb-4 text-white">Select Card Type</h2>
         <select
           className="w-full p-3 mb-6 border border-gray-300 rounded-md"
@@ -44,10 +46,22 @@ function SelectCard({ onApply }) {
         </select>
 
         <div className="flex justify-center space-x-4 pt-6">
-          <CustomButton text="Apply" bgColor="bg-green-600" hoverColor="hover:bg-green-800" textColor="text-white" onClick={handleApply} />
-          <CustomButton text="Cancel" bgColor="bg-red-500" hoverColor="hover:bg-red-700" textColor="text-white" onClick={handleCancel} /> {/* Agregamos handleCancel */}
+          <CustomButton 
+            text="Apply" 
+            bgColor="bg-green-600" 
+            hoverColor="hover:bg-green-800" 
+            textColor="text-white" 
+            onClick={handleApply} 
+          />
+          <CustomButton 
+            text="Cancel" 
+            bgColor="bg-red-500" 
+            hoverColor="hover:bg-red-700" 
+            textColor="text-white" 
+            onClick={handleCancel} 
+          />
         </div>
-      </div>
+      </form>
     </div>
   );
 }

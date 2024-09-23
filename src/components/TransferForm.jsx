@@ -3,6 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 
+
 const TransferForm = ({ accounts, onTransferSuccess }) => {
   const [formData, setFormData] = useState({
     sourceAccount: '',
@@ -10,8 +11,8 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
     amount: '',
     description: '',
   });
-  
-  const [isExternal, setIsExternal] = useState(false); // Estado para determinar si es cuenta externa
+
+  const [isExternal, setIsExternal] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -24,19 +25,19 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
   };
 
   const handleAccountTypeChange = () => {
-    setIsExternal(!isExternal); // Cambiar el estado al hacer clic
-    setFormData({ ...formData, destinationAccount: '' }); // Limpiar el campo de destino al cambiar
+    setIsExternal(!isExternal);
+    setFormData({ ...formData, destinationAccount: '' });
   };
 
   const validateForm = () => {
     if (!formData.sourceAccount || !formData.destinationAccount) {
-      return 'Las cuentas de origen y destino son obligatorias.';
+      return 'Source and destination accounts are required.';
     }
     if (formData.sourceAccount === formData.destinationAccount) {
-      return 'La cuenta de origen y destino no pueden ser la misma.';
+      return 'Source and destination accounts cannot be the same.';
     }
     if (parseFloat(formData.amount) <= 0 || isNaN(parseFloat(formData.amount))) {
-      return 'El monto debe ser un número positivo.';
+      return 'The amount must be a positive number.';
     }
     return null;
   };
@@ -71,26 +72,26 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
       );
 
       console.log('Transaction successful:', response.data);
-      toast.success('Transacción exitosa');
-      onTransferSuccess(); // Reload accounts after successful transaction
+      toast.success('Transaction successful');
+      onTransferSuccess();
     } catch (error) {
       setError(error.response?.data || error.message);
       console.error('Error details:', error.response?.data || error.message);
-      toast.error('Error en la transacción');
+      toast.error('Error in transaction');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg max-w-lg mx-auto">
+    <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg w-1/2 mx-auto"> {/* Ajustado al 50% de ancho */}
       <form onSubmit={handleSubmit} className="p-6 flex flex-col justify-center">
-        <h2 className="text-3xl font-bold text-center text-white mb-6">Transferencia Bancaria</h2>
+        <h2 className="text-3xl font-bold text-center text-white mb-6">Make a Transaction</h2>
 
-        {/* Cuenta de Origen */}
+        {/* Source Account */}
         <div className="mb-4">
           <label htmlFor="sourceAccount" className="block text-sm font-medium text-white">
-            Cuenta de Origen:
+            Source Account:
           </label>
           <select
             id="sourceAccount"
@@ -100,14 +101,14 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             required
           >
-            <option value="">Selecciona una cuenta</option>
+            <option value="">Select an account</option>
             {accounts.map(account => (
               <option key={account.id} value={account.number}>{account.number}</option>
             ))}
           </select>
         </div>
 
-        {/* Opción para seleccionar cuenta externa */}
+        {/* Option to select external account */}
         <div className="mb-4">
           <label className="flex items-center">
             <input
@@ -116,14 +117,14 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
               onChange={handleAccountTypeChange}
               className="mr-2"
             />
-            Transferir a una cuenta externa
+            Transfer to an external account
           </label>
         </div>
 
-        {/* Cuenta de Destino */}
+        {/* Destination Account */}
         <div className="mb-4">
           <label htmlFor="destinationAccount" className="block text-sm font-medium text-white">
-            Cuenta de Destino:
+            Destination Account:
           </label>
           {isExternal ? (
             <input
@@ -132,7 +133,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
               name="destinationAccount"
               value={formData.destinationAccount}
               onChange={handleInputChange}
-              placeholder="Ingrese cuenta externa"
+              placeholder="Enter external account"
               className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               required
             />
@@ -145,7 +146,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
               className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               required
             >
-              <option value="">Selecciona una cuenta</option>
+              <option value="">Select an account</option>
               {accounts.map(account => (
                 <option key={account.id} value={account.number}>{account.number}</option>
               ))}
@@ -153,10 +154,10 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           )}
         </div>
 
-        {/* Monto */}
+        {/* Amount */}
         <div className="mb-4">
           <label htmlFor="amount" className="block text-sm font-medium text-white">
-            Monto:
+            Amount:
           </label>
           <input
             type="number"
@@ -169,10 +170,10 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           />
         </div>
 
-        {/* Descripción */}
+        {/* Description */}
         <div className="mb-4">
           <label htmlFor="description" className="block text-sm font-medium text-white">
-            Descripción:
+            Description:
           </label>
           <input
             type="text"
@@ -192,7 +193,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           }`}
           disabled={loading}
         >
-          {loading ? <ClipLoader size={20} color={"#ffffff"} /> : "Enviar Transferencia"}
+          {loading ? <ClipLoader size={20} color={"#ffffff"} /> : "Submit Transfer"}
         </button>
 
         {error && <p className="mt-4 text-red-600">Error: {error}</p>}
@@ -202,4 +203,5 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 };
 
 export default TransferForm;
+
 
