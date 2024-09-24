@@ -26,34 +26,35 @@ const FormRegister = () => {
     e.preventDefault();
 
     setFieldErrors({
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: ''
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: ''
     });
 
     const result = await dispatch(register({ firstName, lastName, email, password }));
 
     if (register.fulfilled.match(result)) {
-      toast.success('Registration successful!'); // Toast de éxito
-      navigate('/'); 
+        toast.success('Registration successful!'); // Mostrar tostada de éxito
+        navigate('/');
     } else {
-      const backendError = result.payload;
+        const backendError = result.payload;
+        toast.error('Registration failed!'); // Mostrar tostada de error genérica
 
-      if (backendError.includes('Name field')) {
-        setFieldErrors((prev) => ({ ...prev, firstName: backendError }));
-      }
-      if (backendError.includes('Last Name field')) {
-        setFieldErrors((prev) => ({ ...prev, lastName: backendError }));
-      }
-      if (backendError.includes('Email field') || backendError.includes('already registered')) {
-        setFieldErrors((prev) => ({ ...prev, email: backendError }));
-      }
-      if (backendError.includes('Password field')) {
-        setFieldErrors((prev) => ({ ...prev, password: backendError }));
-      }
+        if (backendError.includes('Name field')) {
+            setFieldErrors((prev) => ({ ...prev, firstName: backendError }));
+        }
+        if (backendError.includes('Last Name field')) {
+            setFieldErrors((prev) => ({ ...prev, lastName: backendError }));
+        }
+        if (backendError.includes('Email field') || backendError.includes('already registered')) {
+            setFieldErrors((prev) => ({ ...prev, email: backendError }));
+        }
+        if (backendError.includes('Password field')) {
+            setFieldErrors((prev) => ({ ...prev, password: backendError }));
+        }
     }
-  };
+};
 
   const handleLogin = () => {
     navigate('/');
@@ -139,7 +140,7 @@ const FormRegister = () => {
             </span>
           </p>
         </div>
-        <ToastContainer /> {/* Coloca el ToastContainer al final */}
+        <ToastContainer /> 
       </div>
     </div>
   );
