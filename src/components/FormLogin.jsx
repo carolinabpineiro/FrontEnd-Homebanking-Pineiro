@@ -6,10 +6,11 @@ import { login } from '../redux/actions/authActions';
 const FormLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // Estado para manejar los mensajes de error
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   
-  const { isAuthenticated, status, error } = useAppSelector((state) => state.auth);
+  const { status } = useAppSelector((state) => state.auth);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,11 +18,14 @@ const FormLogin = () => {
 
     try {
       const result = await dispatch(login({ email, password }));
+      
+      // Si la acción es exitosa, se redirige
       if (result.type === 'auth/login/fulfilled') {
         navigate('/accounts');
       }
     } catch (err) {
-      console.log('Error during login', err);
+      // Manejo del error: si el backend devuelve un error, se establece en el estado
+      setErrorMessage(err.response?.data || 'Authentication error'); // Mensaje del backend o error genérico
     }
   };
 
@@ -46,7 +50,6 @@ const FormLogin = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
-              required
             />
           </div>
           <div className="mb-6">
@@ -58,11 +61,9 @@ const FormLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
-              required
-              minLength="4"
             />
           </div>
-          {status === 'failed' && <p className="text-red-700 text-lg font-semibold">{error}</p>} 
+          {errorMessage && <p className="text-red-700 text-lg font-semibold">{errorMessage}</p>} 
           <div>
             <button
               type="submit"
