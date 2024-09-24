@@ -12,7 +12,7 @@ const Register = () => {
       <div className="w-2/3 opacity-95">
         <FormRegister />
       </div>
-      <ToastContainer /> {/* Agrega el ToastContainer aquí */}
+      <ToastContainer />
     </div>
   );
 };

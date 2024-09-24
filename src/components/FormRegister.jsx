@@ -21,6 +21,7 @@ const FormRegister = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { status } = useAppSelector((state) => state.auth);
+  const [isRedirecting, setIsRedirecting] = useState(false); // Estado para manejar la redirección
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -33,33 +34,41 @@ const FormRegister = () => {
       password: ''
     });
 
+    // Evitar que se procese nuevamente si ya está en carga o se está redirigiendo
+    if (status === 'loading' || isRedirecting) return;
+
     const result = await dispatch(register({ firstName, lastName, email, password }));
 
+    // Verifica si el registro fue exitoso
     if (register.fulfilled.match(result)) {
-        toast.success('Registration successful!'); // Mostrar tostada de éxito
-        setTimeout(() => {
-          navigate('/'); // Redirigir después de 2 segundos
-        }, 2000);
+      toast.success('Registration successful!'); // Mostrar tostada de éxito
+
+      // Cambiar el estado para evitar múltiples redirecciones
+      setIsRedirecting(true);
+      setTimeout(() => {
+        navigate('/'); // Redirigir después de 2 segundos
+      }, 2000);
     } else {
-        const backendError = result.payload;
-        // Solo mostrar errores en el formulario, no en toast
-        if (backendError.includes('Name field')) {
-            setFieldErrors((prev) => ({ ...prev, firstName: backendError }));
-        }
-        if (backendError.includes('Last Name field')) {
-            setFieldErrors((prev) => ({ ...prev, lastName: backendError }));
-        }
-        if (backendError.includes('Email field') || backendError.includes('already registered')) {
-            setFieldErrors((prev) => ({ ...prev, email: backendError }));
-        }
-        if (backendError.includes('Password field')) {
-            setFieldErrors((prev) => ({ ...prev, password: backendError }));
-        }
+      const backendError = result.payload;
+
+      // Solo mostrar errores en el formulario, no en toast
+      if (backendError.includes('Name field')) {
+        setFieldErrors((prev) => ({ ...prev, firstName: backendError }));
+      }
+      if (backendError.includes('Last Name field')) {
+        setFieldErrors((prev) => ({ ...prev, lastName: backendError }));
+      }
+      if (backendError.includes('Email field') || backendError.includes('already registered')) {
+        setFieldErrors((prev) => ({ ...prev, email: backendError }));
+      }
+      if (backendError.includes('Password field')) {
+        setFieldErrors((prev) => ({ ...prev, password: backendError }));
+      }
     }
   };
 
   const handleLogin = () => {
-    navigate('/');
+    navigate('/'); // Lógica de redirección al iniciar sesión
   };
 
   return (
@@ -127,7 +136,7 @@ const FormRegister = () => {
             <button
               type="submit"
               className="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300"
-              disabled={status === 'loading'}
+              disabled={status === 'loading' || isRedirecting} // Deshabilitar si ya se está redirigiendo
             >
               {status === 'loading' ? 'Registering...' : 'Register'}
             </button>
@@ -149,3 +158,4 @@ const FormRegister = () => {
 };
 
 export default FormRegister;
+
