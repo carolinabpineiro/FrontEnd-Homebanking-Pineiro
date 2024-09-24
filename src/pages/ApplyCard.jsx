@@ -24,6 +24,7 @@ function ApplyCard() {
         dispatch(setCards(response.data)); // Actualizar el estado global
       } catch (error) {
         console.error('Error fetching cards:', error);
+        toast.error('Error fetching cards. Please try again.'); // Notificación de error
       }
     };
 
@@ -55,6 +56,7 @@ function ApplyCard() {
         },
       });
 
+      // Mensaje de éxito cuando la tarjeta se crea exitosamente
       toast.success('Card application successful!');
 
       // Actualizar el estado local y global después de crear una tarjeta
@@ -78,7 +80,6 @@ function ApplyCard() {
 
   return (
     <div className="flex flex-col h-screen bg-cover bg-center" style={{ backgroundImage: "url('/abuela-nieta.jpg')" }}>
-      
       <div className="flex-grow flex items-start justify-center mt-32"> {/* Alineado hacia la parte superior */}
         <SelectCard onApply={handleCardApplication} />
       </div>
