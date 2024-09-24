@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TransferForm from '../components/TransferForm';
 import { fetchAccounts } from '../utils/api';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify'; // Importa también ToastContainer
 import 'react-toastify/dist/ReactToastify.css'; // Importa el CSS de Toastify
 
 function Transactions() {
@@ -28,6 +28,7 @@ function Transactions() {
       className="flex flex-col h-screen bg-cover bg-center"
       style={{ backgroundImage: "url('/transfer.jpg')" }}
     >
+      <ToastContainer /> {/* Agrega el contenedor de Toastify aquí */}
       <div className="flex-grow flex items-start justify-center mt-32"> {/* Alineado hacia la parte superior */}
         <TransferForm accounts={accounts} onTransferSuccess={loadAccounts} />
       </div>

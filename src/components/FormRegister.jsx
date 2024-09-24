@@ -25,11 +25,12 @@ const FormRegister = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    // Limpiar errores previos
     setFieldErrors({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: ''
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: ''
     });
 
     const result = await dispatch(register({ firstName, lastName, email, password }));
@@ -39,8 +40,7 @@ const FormRegister = () => {
         navigate('/');
     } else {
         const backendError = result.payload;
-        toast.error('Registration failed!'); // Mostrar tostada de error genérica
-
+        // Solo mostrar errores en el formulario, no en toast
         if (backendError.includes('Name field')) {
             setFieldErrors((prev) => ({ ...prev, firstName: backendError }));
         }
@@ -54,7 +54,7 @@ const FormRegister = () => {
             setFieldErrors((prev) => ({ ...prev, password: backendError }));
         }
     }
-};
+  };
 
   const handleLogin = () => {
     navigate('/');
@@ -79,7 +79,7 @@ const FormRegister = () => {
               className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.firstName ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your first name"
             />
-            {fieldErrors.firstName && <p className="font-bold">{fieldErrors.firstName}</p>}
+            {fieldErrors.firstName && <p className="text-black font-bold">{fieldErrors.firstName}</p>} {/* Mensaje de error */}
           </div>
 
           <div className="mb-6">
@@ -92,7 +92,7 @@ const FormRegister = () => {
               className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.lastName ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your last name"
             />
-            {fieldErrors.lastName && <p className="font-bold">{fieldErrors.lastName}</p>}
+            {fieldErrors.lastName && <p className="text-black font-bold">{fieldErrors.lastName}</p>} {/* Mensaje de error */}
           </div>
 
           <div className="mb-6">
@@ -105,7 +105,7 @@ const FormRegister = () => {
               className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your email"
             />
-            {fieldErrors.email && <p className="font-bold">{fieldErrors.email}</p>}
+            {fieldErrors.email && <p className="text-black font-bold">{fieldErrors.email}</p>} {/* Mensaje de error */}
           </div>
 
           <div className="mb-6">
@@ -118,7 +118,7 @@ const FormRegister = () => {
               className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your password"
             />
-            {fieldErrors.password && <p className="font-bold">{fieldErrors.password}</p>}
+            {fieldErrors.password && <p className="text-black font-bold">{fieldErrors.password}</p>} {/* Mensaje de error */}
           </div>
 
           <div>
