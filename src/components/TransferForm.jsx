@@ -44,6 +44,11 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
     if (parseFloat(formData.amount) <= 0 || isNaN(parseFloat(formData.amount))) {
       errors.amount = 'The amount must be a positive number.';
     }
+
+    // Validación de la descripción
+    if (!formData.description) {
+      errors.description = 'Description is required.';
+    }
     
     return errors;
   };
@@ -195,6 +200,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             onChange={handleInputChange}
             className={`mt-1 p-3 w-full border ${backendErrors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
+          {!formData.description && <p className="text-black font-bold">Description is required.</p>}
         </div>
 
         <button
