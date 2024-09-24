@@ -14,13 +14,18 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
   const [isExternal, setIsExternal] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [backendErrors, setBackendErrors] = useState({}); // Para almacenar errores del backend
+  const [backendErrors, setBackendErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
+    });
+    setTouched({
+      ...touched,
+      [name]: true,
     });
   };
 
@@ -44,10 +49,8 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
     if (parseFloat(formData.amount) <= 0 || isNaN(parseFloat(formData.amount))) {
       errors.amount = 'The amount must be a positive number.';
     }
-
-    // Validación de la descripción
     if (!formData.description) {
-      errors.description = 'Description is required.';
+      errors.description = 'Description is required.'; // Agregado para la descripción
     }
     
     return errors;
@@ -56,7 +59,8 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    setBackendErrors({}); // Limpiar errores del backend
+    setBackendErrors({});
+    setTouched({}); // Reiniciar campos tocados para que se muestren errores al enviar
 
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
@@ -88,7 +92,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
       onTransferSuccess();
     } catch (error) {
       const backendErrorMessage = error.response?.data || error.message;
-      setError(backendErrorMessage); // Set general error message
+      setError(backendErrorMessage);
       console.error('Error details:', backendErrorMessage);
     } finally {
       setLoading(false);
@@ -119,7 +123,9 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
               </option>
             ))}
           </select>
-          {backendErrors.sourceAccount && <p className="text-red-500 text-sm">{backendErrors.sourceAccount}</p>}
+          {backendErrors.sourceAccount && (
+            <p className="text-black font-bold">{backendErrors.sourceAccount}</p>
+          )}
         </div>
 
         {/* Option to select external account */}
@@ -168,7 +174,9 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
               ))}
             </select>
           )}
-          {backendErrors.destinationAccount && <p className="text-red-500 text-sm">{backendErrors.destinationAccount}</p>}
+          {backendErrors.destinationAccount && (
+            <p className="text-black font-bold">{backendErrors.destinationAccount}</p>
+          )}
         </div>
 
         {/* Amount */}
@@ -184,7 +192,9 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             onChange={handleInputChange}
             className={`mt-1 p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
-          {backendErrors.amount && <p className="text-red-500 text-sm">{backendErrors.amount}</p>}
+          {backendErrors.amount && (
+            <p className="text-black font-bold">{backendErrors.amount}</p>
+          )}
         </div>
 
         {/* Description */}
@@ -198,9 +208,12 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             name="description"
             value={formData.description}
             onChange={handleInputChange}
-            className={`mt-1 p-3 w-full border ${backendErrors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+            className={`mt-1 p-3 w-full border ${backendErrors.description && (Object.keys(backendErrors).length > 0) ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
-          {!formData.description && <p className="text-black font-bold">Description is required.</p>}
+          {/* Mostrar el mensaje de error solo si el campo description está vacío y se ha intentado enviar el formulario */}
+          {backendErrors.description && (Object.keys(backendErrors).length > 0) && (
+            <p className="text-black font-bold">{backendErrors.description}</p>
+          )}
         </div>
 
         <button
@@ -211,10 +224,11 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           {loading ? <ClipLoader size={20} color={"#ffffff"} /> : "Submit Transfer"}
         </button>
 
-        {error && <p className="mt-4 text-red-500 font-bold text-center text-lg">{error}</p>}
+        {error && <p className="mt-4 text-black font-bold text-center text-lg">{error}</p>}
       </form>
     </div>
   );
 };
 
 export default TransferForm;
+
