@@ -1,5 +1,7 @@
 import React from 'react';
 import FormRegister from '../components/FormRegister';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Importa el CSS de Toastify
 
 const Register = () => {
   return (

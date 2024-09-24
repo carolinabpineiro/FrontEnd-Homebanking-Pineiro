@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TransferForm from '../components/TransferForm';
 import { fetchAccounts } from '../utils/api';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Importa el CSS de Toastify
 
 function Transactions() {
   const [accounts, setAccounts] = useState([]);

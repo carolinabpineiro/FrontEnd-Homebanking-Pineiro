@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SelectCard from '../components/SelectCard';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Importa el CSS de Toastify
 import { setCards } from '../redux/actions/cardAction'; // Asegúrate de importar setCards para actualizar las tarjetas
 import axios from 'axios';
 

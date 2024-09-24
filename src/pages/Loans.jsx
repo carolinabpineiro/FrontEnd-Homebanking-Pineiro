@@ -1,5 +1,7 @@
 import React from 'react';
 import LoanForm from '../components/LoanForm';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Importa el CSS de Toastify
 
 function Loans() {
   return (

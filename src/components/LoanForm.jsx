@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Importa el CSS de Toastify
 import axios from 'axios';
 
 const LoanForm = ({ onLoanApplied }) => {
