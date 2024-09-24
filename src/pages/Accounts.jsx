@@ -6,8 +6,9 @@ import axios from 'axios';
 import Carousel from '../components/Carousel';
 import Card from '../components/Card';
 import CustomButton from '../components/CustomButton';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify'; // Importa toast y ToastContainer
 import Swal from 'sweetalert2';
+import 'react-toastify/dist/ReactToastify.css'; // Importa el CSS de Toastify
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
@@ -33,6 +34,7 @@ const Accounts = () => {
     } catch (err) {
       console.error('Error fetching accounts:', err);
       setError('Error fetching accounts');
+      toast.error('Error fetching accounts'); // Notificación de error al obtener cuentas
     } finally {
       setLoading(false);
     }
@@ -52,12 +54,12 @@ const Accounts = () => {
         },
       });
       setAccounts([...accounts, response.data]);
-      toast.success("Account requested successfully!");
+      toast.success("Account requested successfully!"); // Notificación de éxito al solicitar cuenta
     } catch (err) {
       if (err.response && err.response.status === 403) {
-        toast.error(err.response.data);
+        toast.error(err.response.data); // Notificación de error específica
       } else {
-        toast.error('Error requesting account');
+        toast.error('Error requesting account'); // Notificación de error genérica
       }
     }
   };
@@ -83,12 +85,12 @@ const Accounts = () => {
       });
 
       setAccounts(accounts.filter(account => account.id !== id));
-      toast.success("Account deleted successfully!");
+      toast.success("Account deleted successfully!"); // Notificación de éxito al eliminar cuenta
     } catch (err) {
       if (err.response) {
-        toast.error(err.response.data);
+        toast.error(err.response.data); // Notificación de error específica
       } else {
-        toast.error('Error deleting account');
+        toast.error('Error deleting account'); // Notificación de error genérica
       }
     }
   };
@@ -130,6 +132,7 @@ const Accounts = () => {
           ))}
         </div>
       </div>
+      <ToastContainer /> {/* Asegúrate de incluir el ToastContainer aquí */}
     </div>
   );
 };
