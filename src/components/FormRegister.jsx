@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store'; 
 import { register } from '../redux/actions/authActions';
@@ -16,6 +16,13 @@ const FormRegister = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    
+    // Aquí se puede añadir una lógica de validación adicional si se desea
+    if (!firstName || !lastName || !email || !password) {
+      toast.error("Please fill in all fields.");
+      return; // Esto evita que se envíe el formulario si hay campos vacíos
+    }
+
     try {
       const result = await dispatch(register({ firstName, lastName, email, password }));
       if (result.type === 'auth/register/fulfilled') {
@@ -30,12 +37,6 @@ const FormRegister = () => {
   const handleLogin = () => {
     navigate('/'); 
   };
-
-  useEffect(() => {
-    if (status === 'failed' && error) {
-      toast.error(error); // Mostrar el error desde el backend
-    }
-  }, [status, error]);
 
   return (
     <div className="flex justify-center items-center h-screen p-4">
@@ -55,7 +56,6 @@ const FormRegister = () => {
               onChange={(e) => setFirstName(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your first name"
-              required
             />
           </div>
 
@@ -68,7 +68,6 @@ const FormRegister = () => {
               onChange={(e) => setLastName(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your last name"
-              required
             />
           </div>
 
@@ -81,7 +80,6 @@ const FormRegister = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
-              required
             />
           </div>
 
@@ -95,7 +93,6 @@ const FormRegister = () => {
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
               minLength="4"
-              required
             />
           </div>
 
