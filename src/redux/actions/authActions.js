@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { toast } from 'react-toastify'; // Importa toast
 
 const API_URL = 'https://homebankingpineiro.onrender.com/api/auth';
 
@@ -9,21 +10,22 @@ export const login = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/login`, credentials);
-      
-      console.log('Response completa:', response); 
-      console.log('Response data (token):', response.data); 
+      console.log('Response completa:', response);
+      console.log('Response data (token):', response.data);
 
       const token = response.data;
 
       if (!token) {
-        throw new Error('Token not found in the response'); // Mensaje en inglés
+        throw new Error('Token not found in the response');
       }
 
       localStorage.setItem('token', token);
-      return { token }; 
+      toast.success('Login successful!'); // Muestra tostada de éxito
+      return { token };
     } catch (error) {
       console.error('Authentication error:', error);
-      return rejectWithValue(error.response?.data || 'Authentication error'); // Mensaje en inglés
+      toast.error(error.response?.data || 'Authentication error'); // Muestra tostada de error
+      return rejectWithValue(error.response?.data || 'Authentication error');
     }
   }
 );
@@ -34,11 +36,13 @@ export const register = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/signup`, credentials);
-      console.log('Registration successful:', response.data); 
-      return response.data; 
+      console.log('Registration successful:', response.data);
+      toast.success('Registration successful!'); // Muestra tostada de éxito
+      return response.data;
     } catch (error) {
       console.error('Registration error:', error);
-      return rejectWithValue(error.response?.data || 'Registration error'); // Mensaje en inglés
+      toast.error(error.response?.data || 'Registration error'); // Muestra tostada de error
+      return rejectWithValue(error.response?.data || 'Registration error');
     }
   }
 );
@@ -52,9 +56,10 @@ export const fetchCurrentUser = createAsyncThunk(
       const response = await axios.get(`${API_URL}/current`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return response.data; 
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || 'Error fetching current user'); // Mensaje en inglés
+      toast.error(error.response?.data || 'Error fetching current user'); // Muestra tostada de error
+      return rejectWithValue(error.response?.data || 'Error fetching current user');
     }
   }
 );
