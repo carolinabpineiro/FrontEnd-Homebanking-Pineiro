@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify'; // Asegúrate de importar toast
 
-const TransferForm = ({ onTransferSuccess }) => {
+const TransferForm = ({ accounts, onTransferSuccess }) => {
   const [formData, setFormData] = useState({
     sourceAccount: '',
     destinationAccount: '',
@@ -51,13 +51,13 @@ const TransferForm = ({ onTransferSuccess }) => {
 
       console.log('Transaction successful:', response.data);
       // Muestra un toast de éxito aquí
-      toast.success('Transaction successful: ' + response.data);
+      toast.success('Transaction successful: ' + response.data.message);
       onTransferSuccess(); // Llama a la función que maneja el éxito de la transferencia
     } catch (error) {
       // Aquí se maneja el error proveniente del backend
       setError(error.response?.data || error.message);
       console.error('Error details:', error.response?.data || error.message);
-      // Mostrar el toast de error, si es necesario
+      // Mostrar el toast de error
       toast.error('Error in transaction: ' + (error.response?.data || error.message));
     } finally {
       setLoading(false);
@@ -68,21 +68,35 @@ const TransferForm = ({ onTransferSuccess }) => {
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="sourceAccount">Source Account</label>
-        <input
-          type="text"
+        <select
           id="sourceAccount"
           value={formData.sourceAccount}
           onChange={(e) => setFormData({ ...formData, sourceAccount: e.target.value })}
-        />
+          required
+        >
+          <option value="">Select a source account</option>
+          {accounts.map((account) => (
+            <option key={account.id} value={account.id}>
+              {account.name} - ${account.balance}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
         <label htmlFor="destinationAccount">Destination Account</label>
-        <input
-          type="text"
+        <select
           id="destinationAccount"
           value={formData.destinationAccount}
           onChange={(e) => setFormData({ ...formData, destinationAccount: e.target.value })}
-        />
+          required
+        >
+          <option value="">Select a destination account</option>
+          {accounts.map((account) => (
+            <option key={account.id} value={account.id}>
+              {account.name} - ${account.balance}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
         <label htmlFor="amount">Amount</label>
@@ -91,6 +105,7 @@ const TransferForm = ({ onTransferSuccess }) => {
           id="amount"
           value={formData.amount}
           onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+          required
         />
       </div>
       <div>
