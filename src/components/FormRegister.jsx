@@ -37,7 +37,9 @@ const FormRegister = () => {
 
     if (register.fulfilled.match(result)) {
         toast.success('Registration successful!'); // Mostrar tostada de éxito
-        navigate('/');
+        setTimeout(() => {
+          navigate('/'); // Redirigir después de 2 segundos
+        }, 2000);
     } else {
         const backendError = result.payload;
         // Solo mostrar errores en el formulario, no en toast
