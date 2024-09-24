@@ -2,40 +2,61 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store'; 
 import { register } from '../redux/actions/authActions';
-import { toast } from 'react-toastify'; 
 
 const FormRegister = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
+  // Estado para errores específicos de cada campo
+  const [fieldErrors, setFieldErrors] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: ''
+  });
+  
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  const { status, error } = useAppSelector((state) => state.auth);
+  const { status } = useAppSelector((state) => state.auth);
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    
-    // Aquí se puede añadir una lógica de validación adicional si se desea
-    if (!firstName || !lastName || !email || !password) {
-      toast.error("Please fill in all fields.");
-      return; // Esto evita que se envíe el formulario si hay campos vacíos
-    }
 
-    try {
-      const result = await dispatch(register({ firstName, lastName, email, password }));
-      if (result.type === 'auth/register/fulfilled') {
-        toast.success('Account created successfully!');
-        navigate('/'); 
+    // Reseteamos los errores al intentar un nuevo registro
+    setFieldErrors({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: ''
+    });
+
+    const result = await dispatch(register({ firstName, lastName, email, password }));
+
+    if (register.fulfilled.match(result)) {
+      navigate('/'); 
+    } else {
+      // Captura de errores del backend
+      const backendError = result.payload;  // Aquí se capturan los errores del backend
+
+      if (backendError.includes('Name field')) {
+        setFieldErrors((prev) => ({ ...prev, firstName: backendError }));
       }
-    } catch (err) {
-      console.log('Error during registration', err);
+      if (backendError.includes('Last Name field')) {
+        setFieldErrors((prev) => ({ ...prev, lastName: backendError }));
+      }
+      if (backendError.includes('Email field') || backendError.includes('already registered')) {
+        setFieldErrors((prev) => ({ ...prev, email: backendError }));
+      }
+      if (backendError.includes('Password field')) {
+        setFieldErrors((prev) => ({ ...prev, password: backendError }));
+      }
     }
   };
 
   const handleLogin = () => {
-    navigate('/'); 
+    navigate('/');
   };
 
   return (
@@ -54,9 +75,10 @@ const FormRegister = () => {
               id="firstName"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.firstName ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your first name"
             />
+            {fieldErrors.firstName && <p className="text-red-500">{fieldErrors.firstName}</p>}
           </div>
 
           <div className="mb-6">
@@ -66,9 +88,10 @@ const FormRegister = () => {
               id="lastName"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.lastName ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your last name"
             />
+            {fieldErrors.lastName && <p className="text-red-500">{fieldErrors.lastName}</p>}
           </div>
 
           <div className="mb-6">
@@ -78,9 +101,10 @@ const FormRegister = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your email"
             />
+            {fieldErrors.email && <p className="text-red-500">{fieldErrors.email}</p>}
           </div>
 
           <div className="mb-6">
@@ -90,15 +114,11 @@ const FormRegister = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your password"
-              minLength="4"
             />
+            {fieldErrors.password && <p className="text-red-500">{fieldErrors.password}</p>}
           </div>
-
-          {status === 'failed' && error && (
-            <p className="text-red-700 text-lg font-semibold">{error}</p>
-          )}
 
           <div>
             <button

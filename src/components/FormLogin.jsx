@@ -46,7 +46,7 @@ const FormLogin = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
-              required
+             
             />
           </div>
           <div className="mb-6">
@@ -58,8 +58,7 @@ const FormLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
-              required
-              minLength="4"
+              
             />
           </div>
           {status === 'failed' && <p className="text-red-700 text-lg font-semibold">{error}</p>} 
