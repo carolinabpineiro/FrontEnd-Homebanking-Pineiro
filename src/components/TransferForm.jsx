@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { ClipLoader } from 'react-spinners';
 
 const TransferForm = ({ accounts, onTransferSuccess }) => {
   const [formData, setFormData] = useState({
@@ -11,10 +10,8 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
     description: '',
   });
 
-  const [isExternal, setIsExternal] = useState(false);
-  const [error, setError] = useState(null);
+  const [backendErrors, setBackendErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [backendErrors, setBackendErrors] = useState({}); // Para almacenar errores del backend
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,40 +19,17 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
       ...formData,
       [name]: value,
     });
-  };
-
-  const handleAccountTypeChange = () => {
-    setIsExternal(!isExternal);
-    setFormData({ ...formData, destinationAccount: '' });
-  };
-
-  const validateForm = () => {
-    let errors = {};
-    
-    if (!formData.sourceAccount) {
-      errors.sourceAccount = 'Source account is required.';
-    }
-    if (!formData.destinationAccount) {
-      errors.destinationAccount = 'Destination account is required.';
-    }
-    if (formData.sourceAccount === formData.destinationAccount) {
-      errors.destinationAccount = 'Source and destination accounts cannot be the same.';
-    }
-    if (parseFloat(formData.amount) <= 0 || isNaN(parseFloat(formData.amount))) {
-      errors.amount = 'The amount must be a positive number.';
-    }
-    
-    return errors;
+    // Clear error for the field being edited
+    setBackendErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setBackendErrors({}); // Limpiar errores del backend
+    setBackendErrors({}); // Reset backend errors
 
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setBackendErrors(validationErrors);
+    // Validación para el campo de descripción
+    if (!formData.description.trim()) {
+      setBackendErrors({ description: 'Description is required.' }); // Mensaje de error predefinido
       return;
     }
 
@@ -83,7 +57,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
       onTransferSuccess();
     } catch (error) {
       const backendErrorMessage = error.response?.data || error.message;
-      setError(backendErrorMessage); // Set general error message
+      setBackendErrors(backendErrorMessage); // Asignar errores específicos desde el backend
       console.error('Error details:', backendErrorMessage);
     } finally {
       setLoading(false);
@@ -108,26 +82,13 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             className={`mt-1 p-3 w-full border ${backendErrors.sourceAccount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           >
             <option value="">Select an account</option>
-            {accounts.map(account => (
-              <option key={account.id} value={account.number}>
-                {account.number} - Balance: {account.balance}
+            {accounts.map((account) => (
+              <option key={account.id} value={account.id}>
+                {account.name}
               </option>
             ))}
           </select>
-          {backendErrors.sourceAccount && <p className="text-red-500 text-sm">{backendErrors.sourceAccount}</p>}
-        </div>
-
-        {/* Option to select external account */}
-        <div className="mb-4">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={isExternal}
-              onChange={handleAccountTypeChange}
-              className="mr-2"
-            />
-            Transfer to an external account
-          </label>
+          {backendErrors.sourceAccount && <p className="text-black font-bold">{backendErrors.sourceAccount}</p>}
         </div>
 
         {/* Destination Account */}
@@ -135,35 +96,21 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           <label htmlFor="destinationAccount" className="block text-sm font-medium text-white">
             Destination Account:
           </label>
-          {isExternal ? (
-            <input
-              type="text"
-              id="destinationAccount"
-              name="destinationAccount"
-              value={formData.destinationAccount}
-              onChange={handleInputChange}
-              placeholder="Enter external account"
-              className={`mt-1 p-3 w-full border ${backendErrors.destinationAccount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
-            />
-          ) : (
-            <select
-              id="destinationAccount"
-              name="destinationAccount"
-              value={formData.destinationAccount}
-              onChange={handleInputChange}
-              className={`mt-1 p-3 w-full border ${backendErrors.destinationAccount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
-            >
-              <option value="">Select an account</option>
-              {accounts.map(account => (
-                formData.sourceAccount !== account.number && (
-                  <option key={account.id} value={account.number}>
-                    {account.number} - Balance: {account.balance}
-                  </option>
-                )
-              ))}
-            </select>
-          )}
-          {backendErrors.destinationAccount && <p className="text-red-500 text-sm">{backendErrors.destinationAccount}</p>}
+          <select
+            id="destinationAccount"
+            name="destinationAccount"
+            value={formData.destinationAccount}
+            onChange={handleInputChange}
+            className={`mt-1 p-3 w-full border ${backendErrors.destinationAccount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+          >
+            <option value="">Select an account</option>
+            {accounts.map((account) => (
+              <option key={account.id} value={account.id}>
+                {account.name}
+              </option>
+            ))}
+          </select>
+          {backendErrors.destinationAccount && <p className="text-black font-bold">{backendErrors.destinationAccount}</p>}
         </div>
 
         {/* Amount */}
@@ -179,7 +126,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             onChange={handleInputChange}
             className={`mt-1 p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
-          {backendErrors.amount && <p className="text-red-500 text-sm">{backendErrors.amount}</p>}
+          {backendErrors.amount && <p className="text-black font-bold">{backendErrors.amount}</p>}
         </div>
 
         {/* Description */}
@@ -195,17 +142,12 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             onChange={handleInputChange}
             className={`mt-1 p-3 w-full border ${backendErrors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
+          {backendErrors.description && <p className="text-black font-bold">{backendErrors.description}</p>} {/* Mensaje de error aquí */}
         </div>
 
-        <button
-          type="submit"
-          className={`w-full py-3 px-4 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${loading ? 'cursor-not-allowed opacity-70' : ''}`}
-          disabled={loading}
-        >
-          {loading ? <ClipLoader size={20} color={"#ffffff"} /> : "Submit Transfer"}
+        <button type="submit" className="mt-4 bg-blue-500 text-white p-3 rounded-md">
+          {loading ? 'Processing...' : 'Transfer'}
         </button>
-
-        {error && <p className="mt-4 text-red-500 font-bold text-center text-lg">{error}</p>}
       </form>
     </div>
   );
