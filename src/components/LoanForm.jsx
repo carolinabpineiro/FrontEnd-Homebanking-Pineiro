@@ -74,15 +74,20 @@ const LoanForm = ({ onLoanApplied }) => {
         },
       });
 
-      // Si la solicitud es exitosa, mostrar solo el toast de éxito
+      // Mostrar toast solo si se registraron todos los campos
       toast.success(response.data); // Mostrar el mensaje de éxito en una toast
       onLoanApplied(selectedAccount, parseFloat(amount));
 
     } catch (error) {
       if (error.response && error.response.data) {
-        setErrors(error.response.data); // Mostrar los errores del backend directamente en el formulario
+        if (error.response.data.includes("already applied")) {
+          toast.error('You have already applied for this loan'); // Mostrar toast específico si ya se solicitó el préstamo
+        } else {
+          setErrors(error.response.data); // Mostrar los errores del backend directamente en el formulario
+        }
       } else {
         setErrors({ general: 'Error applying for loan' });
+        toast.error('Error applying for loan');
       }
     } finally {
       setLoading(false);
@@ -112,7 +117,7 @@ const LoanForm = ({ onLoanApplied }) => {
           </option>
         ))}
       </select>
-      {errors.loan && <p className="text-red-500">{errors.loan}</p>}
+      {errors.loan && <p className="text-black font-bold">{errors.loan}</p>} {/* Mensaje de error */}
 
       <select
         value={selectedAccount}
@@ -126,7 +131,7 @@ const LoanForm = ({ onLoanApplied }) => {
           </option>
         ))}
       </select>
-      {errors.account && <p className="text-red-500">{errors.account}</p>}
+      {errors.account && <p className="text-black font-bold">{errors.account}</p>} {/* Mensaje de error */}
 
       <input
         type="text"
@@ -135,7 +140,7 @@ const LoanForm = ({ onLoanApplied }) => {
         placeholder="Enter Amount"
         className={`w-full p-3 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
       />
-      {errors.amount && <p className="text-red-500">{errors.amount}</p>}
+      {errors.amount && <p className="text-black font-bold">{errors.amount}</p>} {/* Mensaje de error */}
 
       <select
         value={payments}
@@ -151,7 +156,7 @@ const LoanForm = ({ onLoanApplied }) => {
           ))
         )}
       </select>
-      {errors.payments && <p className="text-red-500">{errors.payments}</p>}
+      {errors.payments && <p className="text-black font-bold">{errors.payments}</p>} {/* Mensaje de error */}
 
       <button
         onClick={handleApplyLoan}
