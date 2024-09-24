@@ -85,9 +85,6 @@ const LoanForm = ({ onLoanApplied }) => {
         } else {
           setErrors(error.response.data); // Mostrar los errores del backend directamente en el formulario
         }
-      } else {
-        setErrors({ general: 'Error applying for loan' });
-        toast.error('Error applying for loan');
       }
     } finally {
       setLoading(false);
@@ -117,7 +114,7 @@ const LoanForm = ({ onLoanApplied }) => {
           </option>
         ))}
       </select>
-      {errors.loan && <p className="text-black font-bold">{errors.loan}</p>} {/* Mensaje de error */}
+      {errors.loan && <p className="text-black font-bold mb-2">{errors.loan}</p>} {/* Mensaje de error */}
 
       <select
         value={selectedAccount}
