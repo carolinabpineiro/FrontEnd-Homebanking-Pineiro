@@ -24,7 +24,6 @@ const LoanForm = ({ onLoanApplied }) => {
         setLoans(response.data);
       } catch (error) {
         setErrors({ general: 'Error fetching loans' });
-        toast.error('Error fetching loans'); // Mensaje de error en caso de fallo al obtener préstamos
       }
     };
 
@@ -38,7 +37,6 @@ const LoanForm = ({ onLoanApplied }) => {
         setAccounts(response.data);
       } catch (error) {
         setErrors({ general: 'Error fetching accounts' });
-        toast.error('Error fetching accounts'); // Mensaje de error en caso de fallo al obtener cuentas
       }
     };
 
@@ -48,8 +46,14 @@ const LoanForm = ({ onLoanApplied }) => {
 
   const handleApplyLoan = async () => {
     // Verificar si todos los campos están completos
-    if (!selectedLoan || !selectedAccount || !amount || !payments) {
-      toast.error('Please fill out all fields');
+    const newErrors = {};
+    if (!selectedLoan) newErrors.loan = 'Please select a loan';
+    if (!selectedAccount) newErrors.account = 'Please select an account';
+    if (!amount) newErrors.amount = 'Please enter an amount';
+    if (!payments) newErrors.payments = 'Please select the number of payments';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -70,18 +74,15 @@ const LoanForm = ({ onLoanApplied }) => {
         },
       });
 
-      // Si la solicitud es exitosa
+      // Si la solicitud es exitosa, mostrar solo el toast de éxito
       toast.success(response.data); // Mostrar el mensaje de éxito en una toast
       onLoanApplied(selectedAccount, parseFloat(amount));
 
     } catch (error) {
-      // Mostrar los mensajes de error del backend directamente
       if (error.response && error.response.data) {
-        setErrors({ general: error.response.data });
-        toast.error('Error: ' + error.response.data); // Mostrar mensaje de error del backend en una toast
+        setErrors(error.response.data); // Mostrar los errores del backend directamente en el formulario
       } else {
         setErrors({ general: 'Error applying for loan' });
-        toast.error('Error applying for loan');
       }
     } finally {
       setLoading(false);
@@ -92,6 +93,7 @@ const LoanForm = ({ onLoanApplied }) => {
     <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg w-3/4 mx-auto">
       <h2 className="text-3xl font-bold text-center text-white mb-6">Apply for a Loan</h2>
 
+      {/* Mostrar errores generales o específicos */}
       {errors.general && (
         <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
           {errors.general}
@@ -101,7 +103,7 @@ const LoanForm = ({ onLoanApplied }) => {
       <select
         value={selectedLoan}
         onChange={(e) => setSelectedLoan(e.target.value)}
-        className="w-full p-3 mb-6 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+        className={`w-full p-3 mb-6 border ${errors.loan ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
       >
         <option value="">Select a loan</option>
         {loans.map((loan) => (
@@ -110,11 +112,12 @@ const LoanForm = ({ onLoanApplied }) => {
           </option>
         ))}
       </select>
+      {errors.loan && <p className="text-red-500">{errors.loan}</p>}
 
       <select
         value={selectedAccount}
         onChange={(e) => setSelectedAccount(e.target.value)}
-        className="w-full p-3 mb-6 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+        className={`w-full p-3 mb-6 border ${errors.account ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
       >
         <option value="">Select an account</option>
         {accounts.map((account) => (
@@ -123,19 +126,21 @@ const LoanForm = ({ onLoanApplied }) => {
           </option>
         ))}
       </select>
+      {errors.account && <p className="text-red-500">{errors.account}</p>}
 
       <input
         type="text"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         placeholder="Enter Amount"
-        className="w-full p-3 mb-6 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+        className={`w-full p-3 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
       />
+      {errors.amount && <p className="text-red-500">{errors.amount}</p>}
 
       <select
         value={payments}
         onChange={(e) => setPayments(e.target.value)}
-        className="w-full p-3 mb-6 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+        className={`w-full p-3 mb-6 border ${errors.payments ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
       >
         <option value="">Select number of payments</option>
         {selectedLoan && loans.length > 0 && (
@@ -146,6 +151,7 @@ const LoanForm = ({ onLoanApplied }) => {
           ))
         )}
       </select>
+      {errors.payments && <p className="text-red-500">{errors.payments}</p>}
 
       <button
         onClick={handleApplyLoan}
