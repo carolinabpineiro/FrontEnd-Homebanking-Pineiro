@@ -1,37 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../redux/store';
+import { useAppDispatch, useAppSelector } from '../redux/store'; 
 import { login } from '../redux/actions/authActions';
+import { toast } from 'react-toastify'; 
 
 const FormLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // Estado para manejar los mensajes de error
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
-  const { status } = useAppSelector((state) => state.auth);
+
+  const { status, error } = useAppSelector((state) => state.auth);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    localStorage.removeItem('cards');
-
     try {
       const result = await dispatch(login({ email, password }));
-      
-      // Si la acción es exitosa, se redirige
       if (result.type === 'auth/login/fulfilled') {
-        navigate('/accounts');
+        toast.success('Login successful!');
+        navigate('/'); 
       }
     } catch (err) {
-      // Manejo del error: si el backend devuelve un error, se establece en el estado
-      setErrorMessage(err.response?.data || 'Authentication error'); // Mensaje del backend o error genérico
+      console.log('Error during login', err);
     }
   };
 
-  const handleRegister = () => {
-    navigate('/register');
-  };
+  useEffect(() => {
+    if (status === 'failed' && error) {
+      toast.error(error); // Mostrar el error desde el backend
+    }
+  }, [status, error]);
 
   return (
     <div className="flex justify-center items-center h-screen p-4">
@@ -40,6 +38,7 @@ const FormLogin = () => {
           <img src="/logo.png" alt="Logo" className="w-24 mb-2" />
           <h1 className="text-2xl md:text-4xl font-extrabold text-white">BANKING 55</h1>
         </div>
+
         <form onSubmit={handleLogin}>
           <div className="mb-6">
             <label htmlFor="email" className="block text-gray-200 text-sm font-bold mb-2">E-mail</label>
@@ -50,8 +49,10 @@ const FormLogin = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
+              required
             />
           </div>
+
           <div className="mb-6">
             <label htmlFor="password" className="block text-gray-200 text-sm font-bold mb-2">Password</label>
             <input
@@ -61,9 +62,15 @@ const FormLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
+              minLength="4"
+              required
             />
           </div>
-          {errorMessage && <p className="text-red-700 text-lg font-semibold">{errorMessage}</p>} 
+
+          {status === 'failed' && error && (
+            <p className="text-red-700 text-lg font-semibold">{error}</p>
+          )}
+
           <div>
             <button
               type="submit"
@@ -74,18 +81,9 @@ const FormLogin = () => {
             </button>
           </div>
         </form>
-        <div className="mt-6 text-center">
-          <p className="text-gray-200">
-            Don't have an account?
-            <span className="text-blue-400 cursor-pointer hover:underline ml-2" onClick={handleRegister}>
-              Register
-            </span>
-          </p>
-        </div>
       </div>
     </div>
   );
 };
 
 export default FormLogin;
-

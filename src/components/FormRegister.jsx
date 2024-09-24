@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store'; 
 import { register } from '../redux/actions/authActions';
@@ -9,25 +9,20 @@ const FormRegister = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // Estado para manejar mensajes de error
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { status } = useAppSelector((state) => state.auth);
+  const { status, error } = useAppSelector((state) => state.auth);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
       const result = await dispatch(register({ firstName, lastName, email, password }));
-
-      // Verificar si la acción fue exitosa
       if (result.type === 'auth/register/fulfilled') {
         toast.success('Account created successfully!');
         navigate('/'); 
       }
     } catch (err) {
-      // Manejo del error: se captura el mensaje de error del backend
-      setErrorMessage(err.response?.data || 'Registration error'); // Mensaje del backend o error genérico
       console.log('Error during registration', err);
     }
   };
@@ -35,6 +30,12 @@ const FormRegister = () => {
   const handleLogin = () => {
     navigate('/'); 
   };
+
+  useEffect(() => {
+    if (status === 'failed' && error) {
+      toast.error(error); // Mostrar el error desde el backend
+    }
+  }, [status, error]);
 
   return (
     <div className="flex justify-center items-center h-screen p-4">
@@ -54,7 +55,7 @@ const FormRegister = () => {
               onChange={(e) => setFirstName(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your first name"
-              // Se eliminó 'required' para que el backend maneje la validación
+              required
             />
           </div>
 
@@ -67,7 +68,7 @@ const FormRegister = () => {
               onChange={(e) => setLastName(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your last name"
-              // Se eliminó 'required' para que el backend maneje la validación
+              required
             />
           </div>
 
@@ -80,7 +81,7 @@ const FormRegister = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
-              // Se eliminó 'required' para que el backend maneje la validación
+              required
             />
           </div>
 
@@ -93,11 +94,14 @@ const FormRegister = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
-              // Se eliminó 'minLength' para que el backend maneje la validación
+              minLength="4"
+              required
             />
           </div>
 
-          {errorMessage && <p className="text-red-700 text-lg font-semibold">{errorMessage}</p>} 
+          {status === 'failed' && error && (
+            <p className="text-red-700 text-lg font-semibold">{error}</p>
+          )}
 
           <div>
             <button
