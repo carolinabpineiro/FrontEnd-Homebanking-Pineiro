@@ -2,26 +2,55 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { login } from '../redux/actions/authActions';
+import { toast, ToastContainer } from 'react-toastify';  
+import 'react-toastify/dist/ReactToastify.css';  
 
 const FormLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
+  // Captura de errores específicos de cada campo
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+  });
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
-  const { isAuthenticated, status, error } = useAppSelector((state) => state.auth);
+  const { status, error } = useAppSelector((state) => state.auth);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     localStorage.removeItem('cards');
 
+    // Reseteamos los errores
+    setErrors({ email: '', password: '' });
+
     try {
       const result = await dispatch(login({ email, password }));
+
       if (result.type === 'auth/login/fulfilled') {
         navigate('/accounts');
+      } else {
+        // Capturamos y manejamos los errores del backend
+        const backendError = result.payload;
+
+        // Manejo de errores específicos según la respuesta del backend
+        if (backendError) {
+          if (backendError.includes('The Email field must not be empty')) {
+            setErrors((prev) => ({ ...prev, email: 'Email field must not be empty' }));
+          }
+          if (backendError.includes('The Password field must not be empty')) {
+            setErrors((prev) => ({ ...prev, password: 'Password field must not be empty' }));
+          }
+          if (backendError.includes('Sorry, email or password invalid')) {
+            toast.error('Sorry, email or password invalid');
+          }
+        }
       }
     } catch (err) {
       console.log('Error during login', err);
+      toast.error('An unexpected error occurred. Please try again later.');
     }
   };
 
@@ -46,8 +75,9 @@ const FormLogin = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
-             
             />
+            {/* Mostrar error de email */}
+            {errors.email && <p className="font-bold text-lg text-red-700">{errors.email}</p>}
           </div>
           <div className="mb-6">
             <label htmlFor="password" className="block text-gray-200 text-sm font-bold mb-2">Password</label>
@@ -58,10 +88,10 @@ const FormLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
-              
             />
+            {/* Mostrar error de password */}
+            {errors.password && <p className="font-bold text-lg text-red-700">{errors.password}</p>}
           </div>
-          {status === 'failed' && <p className="text-red-700 text-lg font-semibold">{error}</p>} 
           <div>
             <button
               type="submit"
@@ -80,6 +110,7 @@ const FormLogin = () => {
             </span>
           </p>
         </div>
+        <ToastContainer />
       </div>
     </div>
   );
