@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Importa el CSS de Toastify
+import { toast } from 'react-toastify'; // Asegúrate de tener la importación de toast
 import axios from 'axios';
 
 const LoanForm = ({ onLoanApplied }) => {
@@ -11,6 +10,7 @@ const LoanForm = ({ onLoanApplied }) => {
   const [amount, setAmount] = useState('');
   const [payments, setPayments] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({}); // Estado para almacenar los errores del backend
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -23,8 +23,8 @@ const LoanForm = ({ onLoanApplied }) => {
         });
         setLoans(response.data);
       } catch (error) {
-        console.error('Error fetching loans:', error);
-        toast.error('Error fetching loans');
+        setErrors({ general: 'Error fetching loans' });
+        toast.error('Error fetching loans'); // Mensaje de error en caso de fallo al obtener préstamos
       }
     };
 
@@ -37,8 +37,8 @@ const LoanForm = ({ onLoanApplied }) => {
         });
         setAccounts(response.data);
       } catch (error) {
-        console.error('Error fetching accounts:', error);
-        toast.error('Error fetching accounts');
+        setErrors({ general: 'Error fetching accounts' });
+        toast.error('Error fetching accounts'); // Mensaje de error en caso de fallo al obtener cuentas
       }
     };
 
@@ -47,6 +47,12 @@ const LoanForm = ({ onLoanApplied }) => {
   }, [token]);
 
   const handleApplyLoan = async () => {
+    // Verificar si todos los campos están completos
+    if (!selectedLoan || !selectedAccount || !amount || !payments) {
+      toast.error('Please fill out all fields');
+      return;
+    }
+
     const loanData = {
       id: selectedLoan,
       amount: parseFloat(amount),
@@ -56,26 +62,41 @@ const LoanForm = ({ onLoanApplied }) => {
 
     try {
       setLoading(true);
+      setErrors({}); // Limpiar errores previos antes de hacer una nueva solicitud
+
       const response = await axios.post('https://homebankingpineiro.onrender.com/api/loans/apply', loanData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      toast.success(response.data);
 
-      const loanAmount = parseFloat(amount);
-      onLoanApplied(selectedAccount, loanAmount);
+      // Si la solicitud es exitosa
+      toast.success(response.data); // Mostrar el mensaje de éxito en una toast
+      onLoanApplied(selectedAccount, parseFloat(amount));
+
     } catch (error) {
-      console.error('Error applying for loan:', error);
-      toast.error('Error applying for loan: ' + error.response.data);
+      // Mostrar los mensajes de error del backend directamente
+      if (error.response && error.response.data) {
+        setErrors({ general: error.response.data });
+        toast.error('Error: ' + error.response.data); // Mostrar mensaje de error del backend en una toast
+      } else {
+        setErrors({ general: 'Error applying for loan' });
+        toast.error('Error applying for loan');
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg w-3/4 mx-auto"> {/* Ajustado al 75% de ancho */}
+    <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg w-3/4 mx-auto">
       <h2 className="text-3xl font-bold text-center text-white mb-6">Apply for a Loan</h2>
+
+      {errors.general && (
+        <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
+          {errors.general}
+        </div>
+      )}
 
       <select
         value={selectedLoan}

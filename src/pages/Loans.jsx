@@ -1,7 +1,7 @@
 import React from 'react';
 import LoanForm from '../components/LoanForm';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Importa el CSS de Toastify
+import { ToastContainer } from 'react-toastify'; // Importar ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Importar el CSS de Toastify
 
 function Loans() {
   return (
@@ -14,8 +14,12 @@ function Loans() {
           <LoanForm />
         </div>
       </div>
+
+      {/* Agregar el ToastContainer aquí */}
+      <ToastContainer />
     </div>
   );
 }
 
 export default Loans;
+
