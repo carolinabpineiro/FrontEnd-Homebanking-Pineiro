@@ -21,14 +21,14 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (state, action) => {
-        console.log('Login Fulfilled:', action.payload); // Verifica el payload
+        console.log('Login Fulfilled:', action.payload);
         state.token = action.payload.token; // Asegúrate de que no sea undefined
         state.isAuthenticated = true;
         state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload;
+        state.error = action.payload; // Mantén el error para mostrarlo si es necesario
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.user = action.payload;
