@@ -9,7 +9,7 @@ export const fetchAccounts = async () => {
   }
 
   try {
-    const response = await axios.get('http://localhost:8080/api/accounts/current', {
+    const response = await axios.get('https://homebankingpineiro.onrender.com/api/accounts/current', {
       headers: {
         Authorization: `Bearer ${token}`, // Asegúrate de usar comillas invertidas
       },

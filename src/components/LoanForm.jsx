@@ -15,7 +15,7 @@ const LoanForm = ({ onLoanApplied }) => {
   useEffect(() => {
     const fetchLoans = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/loans/loansAvailable', {
+        const response = await axios.get('https://homebankingpineiro.onrender.com/api/loans/loansAvailable', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -29,7 +29,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     const fetchAccounts = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/accounts/current', {
+        const response = await axios.get('https://homebankingpineiro.onrender.com/api/accounts/current', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -55,7 +55,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:8080/api/loans/apply', loanData, {
+      const response = await axios.post('https://homebankingpineiro.onrender.com/api/loans/apply', loanData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

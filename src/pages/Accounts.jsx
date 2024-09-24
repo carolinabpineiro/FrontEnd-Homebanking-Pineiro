@@ -24,7 +24,7 @@ const Accounts = () => {
   const fetchAccounts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:8080/api/accounts/current', {
+      const response = await axios.get('https://homebankingpineiro.onrender.com/api/accounts/current', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -46,7 +46,7 @@ const Accounts = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:8080/api/accounts/current', {}, {
+      const response = await axios.post('https://homebankingpineiro.onrender.com/api/accounts/current', {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -76,7 +76,7 @@ const Accounts = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:8080/api/accounts/${id}`, {
+      await axios.delete(`https://homebankingpineiro.onrender.com/api/accounts/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

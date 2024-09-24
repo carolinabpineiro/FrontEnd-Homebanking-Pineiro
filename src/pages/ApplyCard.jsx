@@ -15,7 +15,7 @@ function ApplyCard() {
     // Función para obtener las tarjetas existentes
     const fetchCards = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/clients/current/cards', {
+        const response = await axios.get('https://homebankingpineiro.onrender.com/api/clients/current/cards', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -46,7 +46,7 @@ function ApplyCard() {
 
     try {
       // Solicitud al backend para crear la nueva tarjeta
-      const response = await axios.post('http://localhost:8080/api/clients/current/cards', {
+      const response = await axios.post('https://homebankingpineiro.onrender.com/api/clients/current/cards', {
         type: newCard.type.toUpperCase(), // Asegúrate de enviar el tipo correctamente
         color: newCard.color.toUpperCase(), // Asegúrate de enviar el color correctamente
       }, {
@@ -58,7 +58,7 @@ function ApplyCard() {
       toast.success('Card application successful!');
 
       // Actualizar el estado local y global después de crear una tarjeta
-      const updatedCardsResponse = await axios.get('http://localhost:8080/api/clients/current/cards', {
+      const updatedCardsResponse = await axios.get('https://homebankingpineiro.onrender.com/api/clients/current/cards', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

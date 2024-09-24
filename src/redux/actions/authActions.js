@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/auth';
+const API_URL = 'https://homebankingpineiro.onrender.com/api/auth';
 
 // Acción para iniciar sesión
 export const login = createAsyncThunk(

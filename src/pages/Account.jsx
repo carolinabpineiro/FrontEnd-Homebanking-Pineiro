@@ -18,13 +18,13 @@ const Account = () => {
 
       try {
         // Obtener la cuenta
-        const accountResponse = await axios.get(`http://localhost:8080/api/accounts/${id}`, {
+        const accountResponse = await axios.get(`https://homebankingpineiro.onrender.com/api/accounts/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setAccount(accountResponse.data);
 
         // Obtener las transacciones de la cuenta
-        const transactionsResponse = await axios.get(`http://localhost:8080/api/transactions/${id}`, {
+        const transactionsResponse = await axios.get(`https://homebankingpineiro.onrender.com/api/transactions/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTransactions(transactionsResponse.data);
