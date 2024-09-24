@@ -77,7 +77,7 @@ const FormLogin = () => {
               placeholder="Enter your email"
             />
             {/* Mostrar error de email */}
-            {errors.email && <p className="font-bold text-lg text-red-700">{errors.email}</p>}
+            {errors.email && <p className="font-bold">{errors.email}</p>}
           </div>
           <div className="mb-6">
             <label htmlFor="password" className="block text-gray-200 text-sm font-bold mb-2">Password</label>
@@ -90,7 +90,7 @@ const FormLogin = () => {
               placeholder="Enter your password"
             />
             {/* Mostrar error de password */}
-            {errors.password && <p className="font-bold text-lg text-red-700">{errors.password}</p>}
+            {errors.password && <p className="font-bold">{errors.password}</p>}
           </div>
           <div>
             <button
