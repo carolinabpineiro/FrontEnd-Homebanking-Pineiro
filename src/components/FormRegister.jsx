@@ -49,12 +49,11 @@ const FormRegister = () => {
       return;
     }
     if (!email) {
-      // Mostrar tostada para el email vacío
-      toast.error("Email is required.");
+      setFieldErrors(prev => ({ ...prev, email: 'Email is required' }))
+  
       return;
     } else if (!validateEmail(email)) {
-      // Mostrar tostada para el email inválido
-      toast.error("Invalid email format.");
+      setFieldErrors(prev => ({ ...prev, email: 'Invalid email format. Please ensure your email includes '@' and '.com'.' }))
       return;
     }
     if (!password) {
