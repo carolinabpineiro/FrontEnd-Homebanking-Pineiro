@@ -7,8 +7,10 @@ const LoanForm = ({ onLoanApplied }) => {
   const [selectedLoan, setSelectedLoan] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState('');
-  const [amount, setAmount] = useState('');
-  const [payments, setPayments] = useState('');
+  const [formData, setFormData] = useState({
+    amount: '$', // Iniciar con el símbolo $
+    payments: '',
+  });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const token = localStorage.getItem('token');
@@ -44,30 +46,60 @@ const LoanForm = ({ onLoanApplied }) => {
     fetchAccounts();
   }, [token]);
 
-  const handleApplyLoan = async () => {
-    const newErrors = {};
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
 
-    // Validaciones
-    if (!selectedLoan) newErrors.loan = 'Please select a loan';
-    if (!selectedAccount) newErrors.account = 'Please select an account';
-    if (!amount) newErrors.amount = 'Please enter an amount';
-    if (parseFloat(amount.replace(/[$,]/g, '')) <= 0) newErrors.amount = 'The amount must be greater than 0'; // Validación para mayor que 0
-    if (!payments) newErrors.payments = 'Please select the number of payments';
+    // Lógica para formatear el campo "amount"
+    if (name === "amount") {
+      const cleanValue = value.replace(/[^0-9]/g, ''); // Eliminar caracteres que no sean números
+      const formattedValue = `$${parseInt(cleanValue || '0', 10).toLocaleString()}`; // Formatear con símbolo $
+      
+      setFormData({
+        ...formData,
+        [name]: formattedValue,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
 
-    const maxAmount = loans.find(loan => loan.id === selectedLoan)?.maxAmount;
-    if (maxAmount && parseFloat(amount.replace(/[$,]/g, '')) > maxAmount) {
-      newErrors.amount = `Amount cannot exceed $${maxAmount.toLocaleString()}`;
+  const validateForm = () => {
+    let errors = {};
+
+    if (!selectedLoan) errors.loan = 'Please select a loan';
+    if (!selectedAccount) errors.account = 'Please select an account';
+
+    const amountValue = parseFloat(formData.amount.replace(/[$,]/g, ''));
+    if (!formData.amount) {
+      errors.amount = 'Please enter an amount';
+    } else if (amountValue <= 0 || isNaN(amountValue)) {
+      errors.amount = 'The amount must be a positive number';
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    if (!formData.payments) errors.payments = 'Please select the number of payments';
+
+    const maxAmount = loans.find(loan => loan.id === selectedLoan)?.maxAmount;
+    if (maxAmount && amountValue > maxAmount) {
+      errors.amount = `Amount cannot exceed $${maxAmount.toLocaleString()}`;
+    }
+
+    return errors;
+  };
+
+  const handleApplyLoan = async () => {
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
     const loanData = {
       id: selectedLoan,
-      amount: parseFloat(amount.replace(/[$,]/g, '')), // Convertir a número sin comas
-      payments: payments,
+      amount: parseFloat(formData.amount.replace(/[$,]/g, '')), // Eliminar $ y comas para enviar como número
+      payments: formData.payments,
       destinationAccount: selectedAccount,
     };
 
@@ -81,7 +113,7 @@ const LoanForm = ({ onLoanApplied }) => {
       });
 
       toast.success('Loan successfully applied!');
-      onLoanApplied(selectedAccount, parseFloat(amount.replace(/[$,]/g, '')));
+      onLoanApplied(selectedAccount, parseFloat(formData.amount.replace(/[$,]/g, '')));
 
     } catch (error) {
       if (error.response && error.response.data) {
@@ -95,13 +127,6 @@ const LoanForm = ({ onLoanApplied }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Función para manejar cambios en el campo "Amount"
-  const handleAmountChange = (e) => {
-    const inputValue = e.target.value.replace(/[^\d]/g, ''); // Permitimos solo números
-    const numericValue = inputValue ? parseFloat(inputValue) : 0; // Convertimos a número
-    setAmount(numericValue.toLocaleString()); // Formateamos con separadores de miles
   };
 
   return (
@@ -149,9 +174,10 @@ const LoanForm = ({ onLoanApplied }) => {
         <span className="absolute left-3 top-3 text-gray-500">$</span>
         <input
           type="text"
-          value={amount}
-          onChange={handleAmountChange}
-          placeholder="Enter Amount"
+          name="amount"
+          value={formData.amount} // Mostrar siempre el valor con $
+          onChange={handleInputChange}
+          onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
           className={`w-full p-3 pl-8 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
         />
       </div>
@@ -159,8 +185,9 @@ const LoanForm = ({ onLoanApplied }) => {
 
       <label className="text-white">Number of Payments</label>
       <select
-        value={payments}
-        onChange={(e) => setPayments(e.target.value)}
+        name="payments"
+        value={formData.payments}
+        onChange={handleInputChange}
         className={`w-full p-3 mb-6 border ${errors.payments ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
       >
         <option value="">Select number of payments</option>
@@ -186,5 +213,3 @@ const LoanForm = ({ onLoanApplied }) => {
 };
 
 export default LoanForm;
-
-
