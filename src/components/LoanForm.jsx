@@ -8,7 +8,7 @@ const LoanForm = ({ onLoanApplied }) => {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState('');
   const [formData, setFormData] = useState({
-    amount: '$', // Iniciar con el símbolo $
+    amount: '', // Eliminar el símbolo $
     payments: '',
   });
   const [loading, setLoading] = useState(false);
@@ -49,11 +49,10 @@ const LoanForm = ({ onLoanApplied }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Lógica para formatear el campo "amount"
+    // Formatear solo el campo "amount" usando toLocaleString()
     if (name === "amount") {
       const cleanValue = value.replace(/[^0-9]/g, ''); // Eliminar caracteres que no sean números
-      const formattedValue = `$${parseInt(cleanValue || '0', 10).toLocaleString()}`; // Formatear con símbolo $
-      
+      const formattedValue = parseInt(cleanValue || '0', 10).toLocaleString(); // Solo formatear con comas
       setFormData({
         ...formData,
         [name]: formattedValue,
@@ -72,7 +71,7 @@ const LoanForm = ({ onLoanApplied }) => {
     if (!selectedLoan) errors.loan = 'Please select a loan';
     if (!selectedAccount) errors.account = 'Please select an account';
 
-    const amountValue = parseFloat(formData.amount.replace(/[$,]/g, ''));
+    const amountValue = parseFloat(formData.amount.replace(/,/g, '')); // Solo remover comas
     if (!formData.amount) {
       errors.amount = 'Please enter an amount';
     } else if (amountValue <= 0 || isNaN(amountValue)) {
@@ -98,7 +97,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     const loanData = {
       id: selectedLoan,
-      amount: parseFloat(formData.amount.replace(/[$,]/g, '')), // Eliminar $ y comas para enviar como número
+      amount: parseFloat(formData.amount.replace(/,/g, '')), // Remover solo comas
       payments: formData.payments,
       destinationAccount: selectedAccount,
     };
@@ -113,7 +112,7 @@ const LoanForm = ({ onLoanApplied }) => {
       });
 
       toast.success('Loan successfully applied!');
-      onLoanApplied(selectedAccount, parseFloat(formData.amount.replace(/[$,]/g, '')));
+      onLoanApplied(selectedAccount, parseFloat(formData.amount.replace(/,/g, '')));
 
     } catch (error) {
       if (error.response && error.response.data) {
@@ -171,14 +170,13 @@ const LoanForm = ({ onLoanApplied }) => {
 
       <label className="text-white">Amount</label>
       <div className="relative">
-        <span className="absolute left-3 top-3 text-gray-500">$</span>
         <input
           type="text"
           name="amount"
-          value={formData.amount} // Mostrar siempre el valor con $
+          value={formData.amount} // Mostrar solo el valor formateado con comas
           onChange={handleInputChange}
           onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
-          className={`w-full p-3 pl-8 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+          className={`w-full p-3 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
         />
       </div>
       {errors.amount && <p className="text-black font-bold">{errors.amount}</p>}
