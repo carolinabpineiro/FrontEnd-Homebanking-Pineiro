@@ -46,10 +46,18 @@ const LoanForm = ({ onLoanApplied }) => {
 
   const handleApplyLoan = async () => {
     const newErrors = {};
+
+    // Validaciones
     if (!selectedLoan) newErrors.loan = 'Please select a loan';
     if (!selectedAccount) newErrors.account = 'Please select an account';
     if (!amount) newErrors.amount = 'Please enter an amount';
+    if (parseFloat(amount.replace(/[$,]/g, '')) <= 0) newErrors.amount = 'The amount must be greater than 0'; // Validación para mayor que 0
     if (!payments) newErrors.payments = 'Please select the number of payments';
+
+    const maxAmount = loans.find(loan => loan.id === selectedLoan)?.maxAmount;
+    if (maxAmount && parseFloat(amount.replace(/[$,]/g, '')) > maxAmount) {
+      newErrors.amount = `Amount cannot exceed $${maxAmount.toLocaleString()}`;
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -58,7 +66,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     const loanData = {
       id: selectedLoan,
-      amount: parseFloat(amount.replace(/,/g, '')), // Eliminar separadores de miles antes de enviar
+      amount: parseFloat(amount.replace(/[$,]/g, '')), // Convertir a número sin comas
       payments: payments,
       destinationAccount: selectedAccount,
     };
@@ -73,7 +81,7 @@ const LoanForm = ({ onLoanApplied }) => {
       });
 
       toast.success('Loan successfully applied!');
-      onLoanApplied(selectedAccount, parseFloat(amount.replace(/,/g, '')));
+      onLoanApplied(selectedAccount, parseFloat(amount.replace(/[$,]/g, '')));
 
     } catch (error) {
       if (error.response && error.response.data) {
@@ -92,7 +100,8 @@ const LoanForm = ({ onLoanApplied }) => {
   // Función para manejar cambios en el campo "Amount"
   const handleAmountChange = (e) => {
     const inputValue = e.target.value.replace(/[^\d]/g, ''); // Permitimos solo números
-    setAmount(inputValue ? Number(inputValue).toLocaleString() : ''); // Formateamos con separadores de miles
+    const numericValue = inputValue ? parseFloat(inputValue) : 0; // Convertimos a número
+    setAmount(numericValue.toLocaleString()); // Formateamos con separadores de miles
   };
 
   return (
@@ -177,4 +186,5 @@ const LoanForm = ({ onLoanApplied }) => {
 };
 
 export default LoanForm;
+
 
