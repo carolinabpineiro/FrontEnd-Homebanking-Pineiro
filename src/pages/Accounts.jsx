@@ -57,9 +57,9 @@ const Accounts = () => {
       toast.success("Account requested successfully!"); // Notificación de éxito al solicitar cuenta
     } catch (err) {
       if (err.response && err.response.status === 403) {
-        toast.error(err.response.data); // Notificación de error específica
+        toast.error(err.response.data);
       } else {
-        toast.error('Error requesting account'); // Notificación de error genérica
+        toast.error('Error requesting account');
       }
     }
   };
@@ -85,12 +85,12 @@ const Accounts = () => {
       });
 
       setAccounts(accounts.filter(account => account.id !== id));
-      toast.success("Account deleted successfully!"); // Notificación de éxito al eliminar cuenta
+      toast.success("Account deleted successfully!");
     } catch (err) {
       if (err.response) {
-        toast.error(err.response.data); // Notificación de error específica
+        toast.error(err.response.data);
       } else {
-        toast.error('Error deleting account'); // Notificación de error genérica
+        toast.error('Error deleting account');
       }
     }
   };
@@ -122,14 +122,17 @@ const Accounts = () => {
                   creationDate={account.creationDate}
                 />
               </Link>
-              <button
-                className="mt-2 bg-red-500 text-white p-2 rounded"
-                onClick={() => handleDeleteAccount(account.id)}
-              >
-                Delete Account
-              </button>
+              {accounts.length > 1 && ( 
+                <button
+                  className="mt-2 bg-red-500 text-white p-2 rounded"
+                  onClick={() => handleDeleteAccount(account.id)}
+                >
+                  Delete Account
+                </button>
+              )}
             </div>
           ))}
+
         </div>
       </div>
       <ToastContainer /> {/* Asegúrate de incluir el ToastContainer aquí */}
