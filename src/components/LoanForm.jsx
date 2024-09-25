@@ -80,11 +80,16 @@ const LoanForm = ({ onLoanApplied }) => {
 
     } catch (error) {
       if (error.response && error.response.data) {
-        // Mostrar errores en los campos correspondientes
-        setErrors(error.response.data);
-        
-        // Mostrar toast con mensaje de error general
-        toast.error('Error applying for loan!');
+        // Mostrar mensaje específico si ya se solicitó el préstamo
+        if (error.response.data.includes("already applied")) {
+          toast.error('You have already applied for this loan');
+        } else {
+          // Mostrar otros errores del backend directamente en el formulario
+          setErrors(error.response.data);
+          
+          // Mostrar toast con mensaje de error general
+          toast.error('Error applying for loan!');
+        }
       }
     } finally {
       setLoading(false);
