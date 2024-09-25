@@ -74,17 +74,17 @@ const LoanForm = ({ onLoanApplied }) => {
         },
       });
 
-      // Mostrar toast solo si se registraron todos los campos
-      toast.success(response.data); // Mostrar el mensaje de éxito en una toast
+      // Mostrar toast de éxito
+      toast.success('Loan successfully applied!');
       onLoanApplied(selectedAccount, parseFloat(amount));
 
     } catch (error) {
       if (error.response && error.response.data) {
-        if (error.response.data.includes("already applied")) {
-          toast.error('You have already applied for this loan'); // Mostrar toast específico si ya se solicitó el préstamo
-        } else {
-          setErrors(error.response.data); // Mostrar los errores del backend directamente en el formulario
-        }
+        // Mostrar errores en los campos correspondientes
+        setErrors(error.response.data);
+        
+        // Mostrar toast con mensaje de error general
+        toast.error('Error applying for loan!');
       }
     } finally {
       setLoading(false);
@@ -102,6 +102,7 @@ const LoanForm = ({ onLoanApplied }) => {
         </div>
       )}
 
+      <label className="text-white">Loan</label>
       <select
         value={selectedLoan}
         onChange={(e) => setSelectedLoan(e.target.value)}
@@ -116,6 +117,7 @@ const LoanForm = ({ onLoanApplied }) => {
       </select>
       {errors.loan && <p className="text-black font-bold mb-2">{errors.loan}</p>} {/* Mensaje de error */}
 
+      <label className="text-white">Account</label>
       <select
         value={selectedAccount}
         onChange={(e) => setSelectedAccount(e.target.value)}
@@ -130,6 +132,7 @@ const LoanForm = ({ onLoanApplied }) => {
       </select>
       {errors.account && <p className="text-black font-bold">{errors.account}</p>} {/* Mensaje de error */}
 
+      <label className="text-white">Amount</label>
       <input
         type="text"
         value={amount}
@@ -139,6 +142,7 @@ const LoanForm = ({ onLoanApplied }) => {
       />
       {errors.amount && <p className="text-black font-bold">{errors.amount}</p>} {/* Mensaje de error */}
 
+      <label className="text-white">Number of Payments</label>
       <select
         value={payments}
         onChange={(e) => setPayments(e.target.value)}
