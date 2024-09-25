@@ -24,7 +24,6 @@ export const login = createAsyncThunk(
       return { token };
     } catch (error) {
       console.error('Authentication error:', error);
-      toast.error(error.response?.data || 'Authentication error'); // Muestra tostada de error
       return rejectWithValue(error.response?.data || 'Authentication error');
     }
   }
