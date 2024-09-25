@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store'; 
 import { register } from '../redux/actions/authActions';
-import { toast, ToastContainer } from 'react-toastify'; 
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const FormRegister = () => {
@@ -21,22 +21,12 @@ const FormRegister = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { status } = useAppSelector((state) => state.auth);
-
-  // Usamos useEffect para manejar la redirección y la notificación al completar el registro.
-  useEffect(() => {
-    if (status === 'fulfilled') {
-      toast.success('Registration successful!'); // Mostrar solo una notificación de éxito
-
-      setTimeout(() => {
-        navigate('/login'); // Redirigir después de 2 segundos al login
-      }, 2000);
-    }
-  }, [status, navigate]);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [hasToastShown, setHasToastShown] = useState(false); // Estado para controlar una sola tostada
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Limpiar errores previos
     setFieldErrors({
       firstName: '',
       lastName: '',
@@ -44,16 +34,23 @@ const FormRegister = () => {
       password: ''
     });
 
-    if (status === 'loading') return; // Evitar múltiples envíos si ya está en proceso
+    if (status === 'loading' || isRedirecting) return;
 
     const result = await dispatch(register({ firstName, lastName, email, password }));
 
     if (register.fulfilled.match(result)) {
-      // El éxito es manejado en el useEffect
+      if (!hasToastShown) { // Asegurarse de que solo se muestre una vez
+        toast.success('Registration successful!');
+        setHasToastShown(true);
+      }
+
+      setIsRedirecting(true);
+      setTimeout(() => {
+        navigate('/'); // Redirigir a la página de login
+      }, 2000);
     } else {
       const backendError = result.payload;
 
-      // Manejar errores específicos en los campos del formulario
       if (backendError.includes('Name field')) {
         setFieldErrors((prev) => ({ ...prev, firstName: backendError }));
       }
@@ -67,6 +64,10 @@ const FormRegister = () => {
         setFieldErrors((prev) => ({ ...prev, password: backendError }));
       }
     }
+  };
+
+  const handleLogin = () => {
+    navigate('/'); // Redirigir al login
   };
 
   return (
@@ -134,7 +135,7 @@ const FormRegister = () => {
             <button
               type="submit"
               className="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300"
-              disabled={status === 'loading'} // Deshabilitar si está en proceso
+              disabled={status === 'loading' || isRedirecting}
             >
               {status === 'loading' ? 'Registering...' : 'Register'}
             </button>
@@ -144,7 +145,7 @@ const FormRegister = () => {
         <div className="mt-6 text-center">
           <p className="text-gray-200">
             Already have an account?
-            <span className="text-blue-400 cursor-pointer hover:underline ml-2" onClick={() => navigate('/login')}>
+            <span className="text-blue-400 cursor-pointer hover:underline ml-2" onClick={handleLogin}>
               Login
             </span>
           </p>
@@ -156,4 +157,3 @@ const FormRegister = () => {
 };
 
 export default FormRegister;
-
