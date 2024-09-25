@@ -89,12 +89,14 @@ const LoanForm = ({ onLoanApplied }) => {
     }
   };
 
+  // Función para formatear la cantidad ingresada con símbolo de pesos y separadores de miles
   const formatCurrency = (value) => {
     if (!value) return '';
     const numberValue = parseFloat(value);
     return isNaN(numberValue) ? '' : `$${numberValue.toLocaleString()}`;
   };
 
+  // Cambiar el valor del input eliminando $ y ,
   const handleAmountChange = (e) => {
     const inputValue = e.target.value.replace(/\$|,/g, ''); // Eliminar $ y ,
     setAmount(inputValue);
@@ -141,13 +143,16 @@ const LoanForm = ({ onLoanApplied }) => {
       {errors.account && <p className="text-black font-bold">{errors.account}</p>}
 
       <label className="text-white">Amount</label>
-      <input
-        type="text"
-        value={formatCurrency(amount)}
-        onChange={handleAmountChange}
-        placeholder="Enter Amount"
-        className={`w-full p-3 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-right`} // Alineación a la derecha
-      />
+      <div className="relative">
+        <span className="absolute left-3 top-3 text-gray-500">$</span>
+        <input
+          type="text"
+          value={formatCurrency(amount)}
+          onChange={handleAmountChange}
+          placeholder="Enter Amount"
+          className={`w-full p-3 pl-8 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-right`} // Alineación a la derecha
+        />
+      </div>
       {errors.amount && <p className="text-black font-bold">{errors.amount}</p>}
 
       <label className="text-white">Number of Payments</label>
