@@ -6,7 +6,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
   const [formData, setFormData] = useState({
     sourceAccount: '',
     destinationAccount: '',
-    amount: '',
+    amount: '$', // Iniciar con el símbolo $
     description: '',
   });
 
@@ -15,14 +15,16 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    // Solo formatear el campo de amount
-    if (name === 'amount') {
-      // Formatear el valor a medida que se escribe
-      const formattedAmount = formatCurrency(value);
+    
+    // Formatear el campo de monto
+    if (name === "amount") {
+      // Mantener el símbolo $ delante del valor y formatear
+      const cleanValue = value.replace(/[^0-9]/g, ''); // Remover todo menos números
+      const formattedValue = `$${parseInt(cleanValue || '0', 10).toLocaleString()}`;
+      
       setFormData({
         ...formData,
-        [name]: formattedAmount,
+        [name]: formattedValue,
       });
     } else {
       setFormData({
@@ -39,10 +41,12 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
   const validateForm = () => {
     let errors = {};
+
     // Validación para sourceAccount
     if (!formData.sourceAccount) {
       errors.sourceAccount = 'Source account is required.';
     }
+
     // Validación para destinationAccount
     if (!formData.destinationAccount) {
       errors.destinationAccount = 'Destination account is required.';
@@ -50,18 +54,20 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
     if (formData.sourceAccount === formData.destinationAccount) {
       errors.destinationAccount = 'Source and destination accounts cannot be the same.';
     }
+
     // Validación para amount
-    const amountValue = parseFloat(formData.amount.replace(/[$,]/g, '')); // Remove $ and commas
+    const amountValue = parseFloat(formData.amount.replace(/[$,]/g, '')); // Remover $ y comas
     if (!formData.amount) {
       errors.amount = 'Amount is required.';
     } else if (amountValue <= 0 || isNaN(amountValue)) {
       errors.amount = 'The amount must be a positive number.';
     }
+
     // Validación para description
     if (!formData.description) {
       errors.description = 'Description is required.';
     }
-    
+
     return errors;
   };
 
@@ -98,14 +104,6 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
       const backendErrorMessage = error.response?.data || error.message;
       toast.error(backendErrorMessage);
     }
-  };
-
-  const formatCurrency = (value) => {
-    if (!value) return '';
-    // Remueve todo lo que no sea dígito
-    const numericValue = value.replace(/[^0-9]/g, '');
-    // Formatea con separadores de miles
-    return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
   return (
@@ -190,25 +188,22 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
         {/* Amount */}
         <div className="mb-4">
-  <label htmlFor="amount" className="block text-sm font-medium text-white">
-    Amount:
-  </label>
-  <div className="relative mt-1">
-    <span className="absolute left-3 top-3 text-white">$</span>
-    <input
-      type="text" // Mantener tipo texto para formato de moneda
-      id="amount"
-      name="amount"
-      value={formatCurrency(formData.amount)} // Formatear el valor de entrada
-      onChange={handleInputChange}
-      onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
-      className={`pl-8 p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
-    />
-  </div>
-  {backendErrors.amount && (
-    <p className="text-black font-bold">{backendErrors.amount}</p>
-  )}
-</div>
+          <label htmlFor="amount" className="block text-sm font-medium text-white">
+            Amount:
+          </label>
+          <input
+            type="text"
+            id="amount"
+            name="amount"
+            value={formData.amount} // Mostrar siempre el valor con $
+            onChange={handleInputChange}
+            onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
+            className={`p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+          />
+          {backendErrors.amount && (
+            <p className="text-black font-bold">{backendErrors.amount}</p>
+          )}
+        </div>
 
         {/* Description */}
         <div className="mb-4">
