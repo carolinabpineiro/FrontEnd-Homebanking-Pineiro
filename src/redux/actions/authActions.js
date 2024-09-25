@@ -36,16 +36,15 @@ export const register = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/signup`, credentials);
-      console.log('Registration successful:', response.data);
-      toast.success('Registration successful!'); // Muestra tostada de éxito
-      return response.data;
+      return response.data; // Elimina la tostada de éxito aquí
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error(error.response?.data || 'Registration error'); // Muestra tostada de error
+      toast.error(error.response?.data || 'Registration error');
       return rejectWithValue(error.response?.data || 'Registration error');
     }
   }
 );
+
 
 // Acción para obtener el usuario actual
 export const fetchCurrentUser = createAsyncThunk(
