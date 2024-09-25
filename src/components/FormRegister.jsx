@@ -21,12 +21,11 @@ const FormRegister = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { status } = useAppSelector((state) => state.auth);
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  const [hasToastShown, setHasToastShown] = useState(false); // Estado para controlar una sola tostada
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    // Limpiar errores previos
     setFieldErrors({
       firstName: '',
       lastName: '',
@@ -34,23 +33,22 @@ const FormRegister = () => {
       password: ''
     });
 
-    if (status === 'loading' || isRedirecting) return;
+    if (status === 'loading') return;
 
     const result = await dispatch(register({ firstName, lastName, email, password }));
 
+    // Mostrar tostada solo si la acción fue exitosa y redirigir
     if (register.fulfilled.match(result)) {
-      if (!hasToastShown) { // Asegurarse de que solo se muestre una vez
-        toast.success('Registration successful!');
-        setHasToastShown(true);
-      }
+      toast.success('Registration successful!', { autoClose: 2000 }); // Mostrar tostada durante 2 segundos
 
-      setIsRedirecting(true);
+      // Redirigir tras 2 segundos
       setTimeout(() => {
-        navigate('/'); // Redirigir a la página de login
+        navigate('/'); 
       }, 2000);
     } else {
       const backendError = result.payload;
 
+      // Actualizar los errores de campo
       if (backendError.includes('Name field')) {
         setFieldErrors((prev) => ({ ...prev, firstName: backendError }));
       }
@@ -135,7 +133,7 @@ const FormRegister = () => {
             <button
               type="submit"
               className="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300"
-              disabled={status === 'loading' || isRedirecting}
+              disabled={status === 'loading'}
             >
               {status === 'loading' ? 'Registering...' : 'Register'}
             </button>
