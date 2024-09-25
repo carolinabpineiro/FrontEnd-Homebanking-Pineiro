@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store'; 
 import { register } from '../redux/actions/authActions';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const FormRegister = () => {
@@ -148,7 +148,6 @@ const FormRegister = () => {
             </span>
           </p>
         </div>
-        <ToastContainer />
       </div>
     </div>
   );
