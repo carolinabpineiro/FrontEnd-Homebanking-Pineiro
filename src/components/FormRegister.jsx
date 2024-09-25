@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store'; 
 import { register } from '../redux/actions/authActions';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';  
 import 'react-toastify/dist/ReactToastify.css';
 
 const FormRegister = () => {
@@ -30,7 +30,7 @@ const FormRegister = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-  
+
     // Limpiar errores previos
     setFieldErrors({
       firstName: '',
@@ -38,11 +38,32 @@ const FormRegister = () => {
       email: '',
       password: ''
     });
-  
+
+    // Validar campos
+    if (!firstName) {
+      setFieldErrors(prev => ({ ...prev, firstName: 'First Name is required' }));
+      return;
+    }
+    if (!lastName) {
+      setFieldErrors(prev => ({ ...prev, lastName: 'Last Name is required' }));
+      return;
+    }
+    if (!email) {
+      setFieldErrors(prev => ({ ...prev, email: 'Email is required' }));
+      return;
+    } else if (!validateEmail(email)) {
+      setFieldErrors(prev => ({ ...prev, email: 'Invalid email format' }));
+      return;
+    }
+    if (!password) {
+      setFieldErrors(prev => ({ ...prev, password: 'Password is required' }));
+      return;
+    }
+
     if (status === 'loading') return;
-  
+
     const result = await dispatch(register({ firstName, lastName, email, password }));
-  
+
     // Mostrar tostada solo si la acción fue exitosa
     if (register.fulfilled.match(result)) {
       if (!toast.isActive('registration-success')) {
@@ -50,7 +71,7 @@ const FormRegister = () => {
           toastId: 'registration-success', 
           autoClose: 2000 
         });
-  
+
         // Redirigir tras 2 segundos
         setTimeout(() => {
           navigate('/'); 
@@ -58,23 +79,22 @@ const FormRegister = () => {
       }
     } else {
       const backendError = result.payload;
-  
+
       // Aquí actualizamos los errores de campo basado en la respuesta del backend
       if (backendError.includes('First Name field')) {
-        setFieldErrors((prev) => ({ ...prev, firstName: backendError }));
+        setFieldErrors(prev => ({ ...prev, firstName: backendError }));
       }
       if (backendError.includes('Last Name field')) {
-        setFieldErrors((prev) => ({ ...prev, lastName: backendError }));
+        setFieldErrors(prev => ({ ...prev, lastName: backendError }));
       }
       if (backendError.includes('Email field') || backendError.includes('already registered')) {
-        setFieldErrors((prev) => ({ ...prev, email: backendError }));
+        setFieldErrors(prev => ({ ...prev, email: backendError }));
       }
       if (backendError.includes('Password field') || backendError.includes('must be at least 4 characters long')) {
-        setFieldErrors((prev) => ({ ...prev, password: backendError }));
+        setFieldErrors(prev => ({ ...prev, password: backendError }));
       }
     }
   };
-  
 
   const handleLogin = () => {
     navigate('/'); // Redirigir al login
@@ -160,6 +180,7 @@ const FormRegister = () => {
             </span>
           </p>
         </div>
+        <ToastContainer />
       </div>
     </div>
   );
