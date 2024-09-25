@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store'; 
 import { register } from '../redux/actions/authActions';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const FormRegister = () => {
@@ -22,12 +22,6 @@ const FormRegister = () => {
   const navigate = useNavigate();
   const { status } = useAppSelector((state) => state.auth);
 
-  // Función para validar el email
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
-    return regex.test(email);
-  };
-
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -39,10 +33,13 @@ const FormRegister = () => {
       password: ''
     });
 
-    // Validar el email
-    if (!validateEmail(email)) {
-      setFieldErrors((prev) => ({ ...prev, email: 'Invalid email address.' }));
-      return; // Detener el registro si el email no es válido
+    // Validar el email aquí y mostrar toast en caso de error
+    if (!email) {
+      toast.error('Email is required', { toastId: 'emailRequired' });
+      return;
+    } else if (!validateEmail(email)) {
+      toast.error('Invalid email format', { toastId: 'invalidEmail' });
+      return;
     }
 
     if (status === 'loading') return;
@@ -79,6 +76,12 @@ const FormRegister = () => {
         setFieldErrors((prev) => ({ ...prev, password: backendError }));
       }
     }
+  };
+
+  // Función para validar el email (puedes dejarla como está)
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+    return regex.test(email);
   };
 
   const handleLogin = () => {
@@ -165,6 +168,7 @@ const FormRegister = () => {
             </span>
           </p>
         </div>
+        <ToastContainer /> {/* Agregar el contenedor de tostadas */}
       </div>
     </div>
   );
