@@ -7,7 +7,7 @@ const LoanForm = ({ onLoanApplied }) => {
   const [selectedLoan, setSelectedLoan] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState('');
-  const [amount, setAmount] = useState('$'); // Inicializar con el símbolo $
+  const [amount, setAmount] = useState('');
   const [payments, setPayments] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -48,7 +48,7 @@ const LoanForm = ({ onLoanApplied }) => {
     const newErrors = {};
     if (!selectedLoan) newErrors.loan = 'Please select a loan';
     if (!selectedAccount) newErrors.account = 'Please select an account';
-    if (!amount || amount === '$') newErrors.amount = 'Please enter an amount';
+    if (!amount) newErrors.amount = 'Please enter an amount';
     if (!payments) newErrors.payments = 'Please select the number of payments';
 
     if (Object.keys(newErrors).length > 0) {
@@ -58,7 +58,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     const loanData = {
       id: selectedLoan,
-      amount: parseFloat(amount.replace(/[$,]/g, '')), // Eliminar $ y , antes de convertir a float
+      amount: parseFloat(amount.replace(/,/g, '')), // Eliminar separadores de miles antes de enviar
       payments: payments,
       destinationAccount: selectedAccount,
     };
@@ -73,7 +73,7 @@ const LoanForm = ({ onLoanApplied }) => {
       });
 
       toast.success('Loan successfully applied!');
-      onLoanApplied(selectedAccount, parseFloat(amount.replace(/[$,]/g, '')));
+      onLoanApplied(selectedAccount, parseFloat(amount.replace(/,/g, '')));
 
     } catch (error) {
       if (error.response && error.response.data) {
@@ -89,10 +89,10 @@ const LoanForm = ({ onLoanApplied }) => {
     }
   };
 
-  // Cambiar el valor del input eliminando $ y ,
+  // Función para manejar cambios en el campo "Amount"
   const handleAmountChange = (e) => {
-    const inputValue = e.target.value.replace(/\$|,/g, ''); // Eliminar $ y ,
-    setAmount(inputValue ? `$${inputValue}` : '$'); // Siempre mostrar el símbolo $
+    const inputValue = e.target.value.replace(/[^\d]/g, ''); // Permitimos solo números
+    setAmount(inputValue ? Number(inputValue).toLocaleString() : ''); // Formateamos con separadores de miles
   };
 
   return (
@@ -140,10 +140,10 @@ const LoanForm = ({ onLoanApplied }) => {
         <span className="absolute left-3 top-3 text-gray-500">$</span>
         <input
           type="text"
-          value={amount} // Mantener el formato con $
+          value={amount}
           onChange={handleAmountChange}
           placeholder="Enter Amount"
-          className={`w-full p-3 pl-8 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-right`} // Alineación a la derecha
+          className={`w-full p-3 pl-8 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
         />
       </div>
       {errors.amount && <p className="text-black font-bold">{errors.amount}</p>}
@@ -177,3 +177,4 @@ const LoanForm = ({ onLoanApplied }) => {
 };
 
 export default LoanForm;
+
