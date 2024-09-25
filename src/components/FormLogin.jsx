@@ -36,6 +36,8 @@ const FormLogin = () => {
         const backendError = result.payload;
 
         if (backendError) {
+          let hasInvalidCredentialsError = false;
+
           // Manejo de errores de campos específicos
           if (backendError.includes('The Email field must not be empty')) {
             setErrors((prev) => ({ ...prev, email: 'Email field must not be empty' }));
@@ -44,12 +46,14 @@ const FormLogin = () => {
             setErrors((prev) => ({ ...prev, password: 'Password field must not be empty' }));
           }
           if (backendError.includes('Sorry, email or password invalid')) {
-            // Mostrar un único error de tostada si las credenciales son incorrectas
-            if (!toast.isActive('loginError')) { // Verificar si ya existe una tostada activa
-              toast.error('Sorry, email or password invalid', {
-                toastId: 'loginError', // Asegurar que solo se muestre una tostada por error
-              });
-            }
+            hasInvalidCredentialsError = true; // Marcar que hubo un error de credenciales inválidas
+          }
+
+          // Mostrar un único error de tostada si las credenciales son incorrectas
+          if (hasInvalidCredentialsError && !toast.isActive('loginError')) {
+            toast.error('Sorry, email or password invalid', {
+              toastId: 'loginError', // Asegurar que solo se muestre una tostada por error
+            });
           }
         }
       }
