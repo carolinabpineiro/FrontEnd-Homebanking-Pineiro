@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { ClipLoader } from 'react-spinners';
 
 const TransferForm = ({ accounts, onTransferSuccess }) => {
   const [formData, setFormData] = useState({
@@ -12,20 +11,13 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
   });
 
   const [isExternal, setIsExternal] = useState(false);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [backendErrors, setBackendErrors] = useState({});
-  const [touched, setTouched] = useState({});
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
-    });
-    setTouched({
-      ...touched,
-      [name]: true,
     });
   };
 
@@ -36,7 +28,6 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
   const validateForm = () => {
     let errors = {};
-    
     // Validación para sourceAccount
     if (!formData.sourceAccount) {
       errors.sourceAccount = 'Source account is required.';
@@ -51,7 +42,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
     // Validación para amount
     const amountValue = parseFloat(formData.amount.replace(/[$,]/g, '')); // Remove $ and commas
     if (!formData.amount) {
-      errors.amount = 'Amount is required.';  // Nuevo mensaje para monto vacío
+      errors.amount = 'Amount is required.';
     } else if (amountValue <= 0 || isNaN(amountValue)) {
       errors.amount = 'The amount must be a positive number.';
     }
@@ -65,20 +56,16 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
     setBackendErrors({});
-    setTouched({}); // Reiniciar campos tocados para que se muestren errores al enviar
-  
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setBackendErrors(validationErrors);
       return;
     }
-  
+
     try {
-      setLoading(true);
       const token = localStorage.getItem('token');
-  
       const response = await axios.post(
         'https://homebankingpineiro.onrender.com/api/transactions',
         {
@@ -93,18 +80,12 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           }
         }
       );
-  
-      console.log('Transaction successful:', response.data);
+
       toast.success('Transaction successful');
       onTransferSuccess();
     } catch (error) {
       const backendErrorMessage = error.response?.data || error.message;
-  
-      // En vez de mostrar el mensaje en el formulario, usamos toast.error
-      toast.error(backendErrorMessage); // Notificación con el mensaje de error
-      console.error('Error details:', backendErrorMessage);
-    } finally {
-      setLoading(false);
+      toast.error(backendErrorMessage);
     }
   };
 
@@ -200,13 +181,13 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             Amount:
           </label>
           <input
-            type="text"  // Cambiado a texto para permitir formato
+            type="text" // Mantener tipo texto para formato de moneda
             id="amount"
             name="amount"
-            value={formatCurrency(formData.amount)}  // Formato con separadores
-            onChange={(e) => handleInputChange(e, true)}  // Manejador ajustado
-            onFocus={(e) => e.target.select()}  // Seleccionar texto al hacer foco
-            className={`mt-1 p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-right`}  // Alineación a la derecha
+            value={formatCurrency(formData.amount)} // Formatear el valor de entrada
+            onChange={handleInputChange}
+            onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
+            className={`mt-1 p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
           {backendErrors.amount && (
             <p className="text-black font-bold">{backendErrors.amount}</p>
@@ -233,10 +214,9 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
         <button
           type="submit"
-          className={`w-full py-3 px-4 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          disabled={loading}
+          className="bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300"
         >
-          {loading ? <ClipLoader size={24} color="#fff" /> : 'Transfer'}
+          Transfer
         </button>
       </form>
     </div>
