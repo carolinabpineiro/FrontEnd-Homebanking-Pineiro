@@ -27,10 +27,10 @@ const FormLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     localStorage.removeItem('cards'); // Eliminamos las tarjetas del localStorage en cada login
-
+  
     // Reseteamos los errores previos
     setErrors({ email: '', password: '' });
-
+  
     // Validar el email manualmente
     if (!email) {
       setErrors((prev) => ({ ...prev, email: 'Email is required' }));
@@ -41,25 +41,31 @@ const FormLogin = () => {
       toast.error('Invalid email format', { toastId: 'invalidEmail' });
       return;
     }
-
+  
     if (!password) {
       setErrors((prev) => ({ ...prev, password: 'Password is required' }));
       toast.error('Password is required', { toastId: 'passwordRequired' });
       return;
     }
-
+  
     try {
       const result = await dispatch(login({ email, password }));
-
+      
+      console.log("Login result:", result); // Agregamos logging para ver el resultado
+  
       if (result.type === 'auth/login/fulfilled') {
         navigate('/accounts');
       } else {
         const backendError = result.payload;
-        if (backendError && backendError.includes('Sorry, email or password invalid')) {
-          toast.error('Sorry, email or password invalid', { toastId: 'loginError' });
+        if (backendError) {
+          // Manejo de errores del backend
+          if (backendError.includes('Sorry, email or password invalid')) {
+            toast.error('Sorry, email or password invalid', { toastId: 'loginError' });
+          }
         }
       }
     } catch (err) {
+      console.error("Error during login:", err); // Log del error para más información
       toast.error('An unexpected error occurred. Please try again later.', { toastId: 'unexpectedError' });
     }
   };
