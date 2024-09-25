@@ -7,7 +7,7 @@ const LoanForm = ({ onLoanApplied }) => {
   const [selectedLoan, setSelectedLoan] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState('');
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState('$'); // Inicializar con el símbolo $
   const [payments, setPayments] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -48,7 +48,7 @@ const LoanForm = ({ onLoanApplied }) => {
     const newErrors = {};
     if (!selectedLoan) newErrors.loan = 'Please select a loan';
     if (!selectedAccount) newErrors.account = 'Please select an account';
-    if (!amount) newErrors.amount = 'Please enter an amount';
+    if (!amount || amount === '$') newErrors.amount = 'Please enter an amount';
     if (!payments) newErrors.payments = 'Please select the number of payments';
 
     if (Object.keys(newErrors).length > 0) {
@@ -89,17 +89,10 @@ const LoanForm = ({ onLoanApplied }) => {
     }
   };
 
-  // Función para formatear la cantidad ingresada con símbolo de pesos y separadores de miles
-  const formatCurrency = (value) => {
-    if (!value) return '';
-    const numberValue = parseFloat(value);
-    return isNaN(numberValue) ? '' : `$${numberValue.toLocaleString()}`;
-  };
-
   // Cambiar el valor del input eliminando $ y ,
   const handleAmountChange = (e) => {
     const inputValue = e.target.value.replace(/\$|,/g, ''); // Eliminar $ y ,
-    setAmount(inputValue);
+    setAmount(inputValue ? `$${inputValue}` : '$'); // Siempre mostrar el símbolo $
   };
 
   return (
@@ -147,7 +140,7 @@ const LoanForm = ({ onLoanApplied }) => {
         <span className="absolute left-3 top-3 text-gray-500">$</span>
         <input
           type="text"
-          value={formatCurrency(amount)}
+          value={amount} // Mantener el formato con $
           onChange={handleAmountChange}
           placeholder="Enter Amount"
           className={`w-full p-3 pl-8 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-right`} // Alineación a la derecha
