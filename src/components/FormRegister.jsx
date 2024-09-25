@@ -37,14 +37,20 @@ const FormRegister = () => {
 
     const result = await dispatch(register({ firstName, lastName, email, password }));
 
-    // Mostrar tostada solo si la acción fue exitosa y redirigir
+    // Mostrar tostada solo si la acción fue exitosa
     if (register.fulfilled.match(result)) {
-      toast.success('Registration successful!', { autoClose: 2000 }); // Mostrar tostada durante 2 segundos
+      // Verificar si la tostada ya ha sido mostrada
+      if (!toast.isActive('registration-success')) {
+        toast.success('Registration successful!', { 
+          toastId: 'registration-success', // Usar un ID único para evitar duplicados
+          autoClose: 2000 
+        });
 
-      // Redirigir tras 2 segundos
-      setTimeout(() => {
-        navigate('/'); 
-      }, 2000);
+        // Redirigir tras 2 segundos
+        setTimeout(() => {
+          navigate('/'); 
+        }, 2000);
+      }
     } else {
       const backendError = result.payload;
 
