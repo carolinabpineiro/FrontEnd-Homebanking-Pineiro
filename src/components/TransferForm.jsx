@@ -190,22 +190,25 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
         {/* Amount */}
         <div className="mb-4">
-          <label htmlFor="amount" className="block text-sm font-medium text-white">
-            Amount:
-          </label>
-          <input
-            type="text"
-            id="amount"
-            name="amount"
-            value={formData.amount} // Muestra el valor sin formatear
-            onChange={handleInputChange} // Cambia la lógica aquí
-            onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
-            className={`mt-1 p-3 w-full border text-right ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
-          />
-          {backendErrors.amount && (
-            <p className="text-black font-bold">{backendErrors.amount}</p>
-          )}
-        </div>
+  <label htmlFor="amount" className="block text-sm font-medium text-white">
+    Amount:
+  </label>
+  <div className="relative mt-1">
+    <span className="absolute left-3 top-3 text-white">$</span>
+    <input
+      type="text" // Mantener tipo texto para formato de moneda
+      id="amount"
+      name="amount"
+      value={formatCurrency(formData.amount)} // Formatear el valor de entrada
+      onChange={handleInputChange}
+      onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
+      className={`pl-8 p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+    />
+  </div>
+  {backendErrors.amount && (
+    <p className="text-black font-bold">{backendErrors.amount}</p>
+  )}
+</div>
 
         {/* Description */}
         <div className="mb-4">
