@@ -49,10 +49,12 @@ const FormRegister = () => {
       return;
     }
     if (!email) {
-      setFieldErrors(prev => ({ ...prev, email: 'Email is required' }));
+      // Mostrar tostada para el email vacío
+      toast.error("Email is required.");
       return;
     } else if (!validateEmail(email)) {
-      setFieldErrors(prev => ({ ...prev, email: 'Invalid email format' }));
+      // Mostrar tostada para el email inválido
+      toast.error("Invalid email format.");
       return;
     }
     if (!password) {
@@ -108,7 +110,7 @@ const FormRegister = () => {
           <h1 className="text-2xl md:text-4xl font-extrabold text-white">BANKING 55</h1>
         </div>
 
-        <form onSubmit={handleRegister}>
+        <form onSubmit={handleRegister} noValidate>
           <div className="mb-6">
             <label htmlFor="firstName" className="block text-gray-200 text-sm font-bold mb-2">First Name</label>
             <input
