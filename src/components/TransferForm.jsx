@@ -15,10 +15,21 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+
+    // Solo formatear el campo de amount
+    if (name === 'amount') {
+      // Formatear el valor a medida que se escribe
+      const formattedAmount = formatCurrency(value);
+      setFormData({
+        ...formData,
+        [name]: formattedAmount,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const handleAccountTypeChange = () => {
@@ -91,8 +102,10 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
   const formatCurrency = (value) => {
     if (!value) return '';
-    const numberValue = parseFloat(value.replace(/[$,]/g, ''));
-    return isNaN(numberValue) ? '' : `$${numberValue.toLocaleString()}`;
+    // Remueve todo lo que no sea dígito
+    const numericValue = value.replace(/[^0-9]/g, '');
+    // Formatea con separadores de miles
+    return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
   return (
@@ -181,13 +194,13 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             Amount:
           </label>
           <input
-            type="text" // Mantener tipo texto para formato de moneda
+            type="text"
             id="amount"
             name="amount"
-            value={formatCurrency(formData.amount)} // Formatear el valor de entrada
-            onChange={handleInputChange}
+            value={formData.amount} // Muestra el valor sin formatear
+            onChange={handleInputChange} // Cambia la lógica aquí
             onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
-            className={`mt-1 p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+            className={`mt-1 p-3 w-full border text-right ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
           {backendErrors.amount && (
             <p className="text-black font-bold">{backendErrors.amount}</p>
