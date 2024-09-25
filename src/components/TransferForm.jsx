@@ -37,20 +37,27 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
   const validateForm = () => {
     let errors = {};
     
+    // Validación para sourceAccount
     if (!formData.sourceAccount) {
       errors.sourceAccount = 'Source account is required.';
     }
+    // Validación para destinationAccount
     if (!formData.destinationAccount) {
       errors.destinationAccount = 'Destination account is required.';
     }
     if (formData.sourceAccount === formData.destinationAccount) {
       errors.destinationAccount = 'Source and destination accounts cannot be the same.';
     }
-    if (parseFloat(formData.amount) <= 0 || isNaN(parseFloat(formData.amount))) {
+    // Validación para amount
+    const amountValue = parseFloat(formData.amount);
+    if (!formData.amount) {
+      errors.amount = 'Amount is required.';  // Nuevo mensaje para monto vacío
+    } else if (amountValue <= 0 || isNaN(amountValue)) {
       errors.amount = 'The amount must be a positive number.';
     }
+    // Validación para description
     if (!formData.description) {
-      errors.description = 'Description is required.'; // Agregado para la descripción
+      errors.description = 'Description is required.';
     }
     
     return errors;
@@ -210,10 +217,9 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             name="description"
             value={formData.description}
             onChange={handleInputChange}
-            className={`mt-1 p-3 w-full border ${backendErrors.description && (Object.keys(backendErrors).length > 0) ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+            className={`mt-1 p-3 w-full border ${backendErrors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
-          
-          {backendErrors.description && (Object.keys(backendErrors).length > 0) && (
+          {backendErrors.description && (
             <p className="text-black font-bold">{backendErrors.description}</p>
           )}
         </div>
@@ -233,4 +239,5 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 };
 
 export default TransferForm;
+
 

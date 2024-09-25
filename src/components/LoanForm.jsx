@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify'; // Asegúrate de tener la importación de toast
+import { toast } from 'react-toastify';
 import axios from 'axios';
 
 const LoanForm = ({ onLoanApplied }) => {
@@ -10,7 +10,7 @@ const LoanForm = ({ onLoanApplied }) => {
   const [amount, setAmount] = useState('');
   const [payments, setPayments] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({}); // Estado para almacenar los errores del backend
+  const [errors, setErrors] = useState({});
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -45,7 +45,6 @@ const LoanForm = ({ onLoanApplied }) => {
   }, [token]);
 
   const handleApplyLoan = async () => {
-    // Verificar si todos los campos están completos
     const newErrors = {};
     if (!selectedLoan) newErrors.loan = 'Please select a loan';
     if (!selectedAccount) newErrors.account = 'Please select an account';
@@ -59,35 +58,29 @@ const LoanForm = ({ onLoanApplied }) => {
 
     const loanData = {
       id: selectedLoan,
-      amount: parseFloat(amount),
+      amount: parseFloat(amount.replace(/[$,]/g, '')), // Eliminar $ y , antes de convertir a float
       payments: payments,
       destinationAccount: selectedAccount,
     };
 
     try {
       setLoading(true);
-      setErrors({}); // Limpiar errores previos antes de hacer una nueva solicitud
-
+      setErrors({});
       const response = await axios.post('https://homebankingpineiro.onrender.com/api/loans/apply', loanData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // Mostrar toast de éxito
       toast.success('Loan successfully applied!');
-      onLoanApplied(selectedAccount, parseFloat(amount));
+      onLoanApplied(selectedAccount, parseFloat(amount.replace(/[$,]/g, '')));
 
     } catch (error) {
       if (error.response && error.response.data) {
-        // Mostrar mensaje específico si ya se solicitó el préstamo
         if (error.response.data.includes("already applied")) {
           toast.error('You have already applied for this loan');
         } else {
-          // Mostrar otros errores del backend directamente en el formulario
           setErrors(error.response.data);
-          
-          // Mostrar toast con mensaje de error general
           toast.error('Error applying for loan!');
         }
       }
@@ -96,11 +89,21 @@ const LoanForm = ({ onLoanApplied }) => {
     }
   };
 
+  const formatCurrency = (value) => {
+    if (!value) return '';
+    const numberValue = parseFloat(value);
+    return isNaN(numberValue) ? '' : `$${numberValue.toLocaleString()}`;
+  };
+
+  const handleAmountChange = (e) => {
+    const inputValue = e.target.value.replace(/\$|,/g, ''); // Eliminar $ y ,
+    setAmount(inputValue);
+  };
+
   return (
     <div className="bg-green-700 opacity-90 p-10 rounded-lg shadow-lg w-3/4 mx-auto">
       <h2 className="text-3xl font-bold text-center text-white mb-6">Apply for a Loan</h2>
 
-      {/* Mostrar errores generales o específicos */}
       {errors.general && (
         <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
           {errors.general}
@@ -120,7 +123,7 @@ const LoanForm = ({ onLoanApplied }) => {
           </option>
         ))}
       </select>
-      {errors.loan && <p className="text-black font-bold mb-2">{errors.loan}</p>} {/* Mensaje de error */}
+      {errors.loan && <p className="text-black font-bold mb-2">{errors.loan}</p>}
 
       <label className="text-white">Account</label>
       <select
@@ -135,17 +138,17 @@ const LoanForm = ({ onLoanApplied }) => {
           </option>
         ))}
       </select>
-      {errors.account && <p className="text-black font-bold">{errors.account}</p>} {/* Mensaje de error */}
+      {errors.account && <p className="text-black font-bold">{errors.account}</p>}
 
       <label className="text-white">Amount</label>
       <input
         type="text"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        value={formatCurrency(amount)}
+        onChange={handleAmountChange}
         placeholder="Enter Amount"
-        className={`w-full p-3 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+        className={`w-full p-3 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-right`} // Alineación a la derecha
       />
-      {errors.amount && <p className="text-black font-bold">{errors.amount}</p>} {/* Mensaje de error */}
+      {errors.amount && <p className="text-black font-bold">{errors.amount}</p>}
 
       <label className="text-white">Number of Payments</label>
       <select
@@ -162,7 +165,7 @@ const LoanForm = ({ onLoanApplied }) => {
           ))
         )}
       </select>
-      {errors.payments && <p className="text-black font-bold">{errors.payments}</p>} {/* Mensaje de error */}
+      {errors.payments && <p className="text-black font-bold">{errors.payments}</p>}
 
       <button
         onClick={handleApplyLoan}
