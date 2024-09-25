@@ -18,6 +18,12 @@ const FormLogin = () => {
   const navigate = useNavigate();
   const { status } = useAppSelector((state) => state.auth);
 
+  // Función de validación del email
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Expresión regular para validar email
+    return regex.test(email);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     localStorage.removeItem('cards'); // Eliminamos las tarjetas del localStorage en cada login
@@ -25,45 +31,36 @@ const FormLogin = () => {
     // Reseteamos los errores previos
     setErrors({ email: '', password: '' });
 
+    // Validar el email manualmente
+    if (!email) {
+      setErrors((prev) => ({ ...prev, email: 'Email is required' }));
+      toast.error('Email is required', { toastId: 'emailRequired' });
+      return;
+    } else if (!validateEmail(email)) {
+      setErrors((prev) => ({ ...prev, email: 'Invalid email format' }));
+      toast.error('Invalid email format', { toastId: 'invalidEmail' });
+      return;
+    }
+
+    if (!password) {
+      setErrors((prev) => ({ ...prev, password: 'Password is required' }));
+      toast.error('Password is required', { toastId: 'passwordRequired' });
+      return;
+    }
+
     try {
       const result = await dispatch(login({ email, password }));
 
       if (result.type === 'auth/login/fulfilled') {
-        // Navegamos a "accounts" solo si el login fue exitoso
         navigate('/accounts');
       } else {
-        // Capturamos y manejamos los errores del backend
         const backendError = result.payload;
-
-        if (backendError) {
-          let hasInvalidCredentialsError = false;
-
-          // Manejo de errores de campos específicos
-          if (backendError.includes('The Email field must not be empty')) {
-            setErrors((prev) => ({ ...prev, email: 'Email field must not be empty' }));
-          }
-          if (backendError.includes('The Password field must not be empty')) {
-            setErrors((prev) => ({ ...prev, password: 'Password field must not be empty' }));
-          }
-          if (backendError.includes('Sorry, email or password invalid')) {
-            hasInvalidCredentialsError = true; // Marcar que hubo un error de credenciales inválidas
-          }
-
-          // Mostrar un único error de tostada si las credenciales son incorrectas
-          if (hasInvalidCredentialsError && !toast.isActive('loginError')) {
-            toast.error('Sorry, email or password invalid', {
-              toastId: 'loginError', // Asegurar que solo se muestre una tostada por error
-            });
-          }
+        if (backendError && backendError.includes('Sorry, email or password invalid')) {
+          toast.error('Sorry, email or password invalid', { toastId: 'loginError' });
         }
       }
     } catch (err) {
-      // Mostrar una tostada de error genérica en caso de fallas no manejadas
-      if (!toast.isActive('unexpectedError')) { 
-        toast.error('An unexpected error occurred. Please try again later.', {
-          toastId: 'unexpectedError',
-        });
-      }
+      toast.error('An unexpected error occurred. Please try again later.', { toastId: 'unexpectedError' });
     }
   };
 
@@ -79,7 +76,7 @@ const FormLogin = () => {
           <h1 className="text-2xl md:text-4xl font-extrabold text-white">BANKING 55</h1>
         </div>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} noValidate> {/* Añadimos noValidate */}
           <div className="mb-6">
             <label htmlFor="email" className="block text-gray-200 text-sm font-bold mb-2">E-mail</label>
             <input
@@ -104,7 +101,6 @@ const FormLogin = () => {
               className={`w-full p-3 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter your password"
             />
-            {/* Mostrar error de password */}
             {errors.password && <p className="font-bold text-black">{errors.password}</p>}
           </div>
 
