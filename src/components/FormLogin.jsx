@@ -27,22 +27,24 @@ const FormLogin = () => {
 
     try {
       const result = await dispatch(login({ email, password }));
-
+    
       if (result.type === 'auth/login/fulfilled') {
         // Navegamos a "accounts" solo si el login fue exitoso
         navigate('/accounts');
       } else {
         // Capturamos y manejamos los errores del backend
         const backendError = result.payload;
-
+    
+        // Manejo de errores de campos específicos
         if (backendError) {
-          // Manejo de errores de campos específicos
           if (backendError.includes('The Email field must not be empty')) {
             setErrors((prev) => ({ ...prev, email: 'Email field must not be empty' }));
           }
           if (backendError.includes('The Password field must not be empty')) {
             setErrors((prev) => ({ ...prev, password: 'Password field must not be empty' }));
           }
+          
+          // Solo muestra la tostada de error si las credenciales son incorrectas
           if (backendError.includes('Sorry, email or password invalid')) {
             // Mostrar un único error de tostada si las credenciales son incorrectas
             if (!toast.isActive('loginError')) { // Verificar si ya existe una tostada activa
@@ -61,7 +63,6 @@ const FormLogin = () => {
         });
       }
     }
-  };
 
   const handleRegister = () => {
     navigate('/register');
