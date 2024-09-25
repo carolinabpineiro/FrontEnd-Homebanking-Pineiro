@@ -20,13 +20,13 @@ const FormLogin = () => {
 
   // Función de validación del email
   const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Expresión regular para validar email
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
     return regex.test(email);
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    localStorage.removeItem('cards'); // Eliminamos las tarjetas del localStorage en cada login
+    localStorage.removeItem('cards'); 
   
     // Reseteamos los errores previos
     setErrors({ email: '', password: '' });

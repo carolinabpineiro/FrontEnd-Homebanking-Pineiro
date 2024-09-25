@@ -49,7 +49,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
       errors.destinationAccount = 'Source and destination accounts cannot be the same.';
     }
     // Validación para amount
-    const amountValue = parseFloat(formData.amount);
+    const amountValue = parseFloat(formData.amount.replace(/[$,]/g, '')); // Remove $ and commas
     if (!formData.amount) {
       errors.amount = 'Amount is required.';  // Nuevo mensaje para monto vacío
     } else if (amountValue <= 0 || isNaN(amountValue)) {
@@ -84,7 +84,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
         {
           sourceAccount: formData.sourceAccount,
           destinationAccount: formData.destinationAccount,
-          amount: parseFloat(formData.amount),
+          amount: parseFloat(formData.amount.replace(/[$,]/g, '')), // Send clean number
           description: formData.description,
         },
         {
@@ -106,6 +106,12 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const formatCurrency = (value) => {
+    if (!value) return '';
+    const numberValue = parseFloat(value.replace(/[$,]/g, ''));
+    return isNaN(numberValue) ? '' : `$${numberValue.toLocaleString()}`;
   };
 
   return (
@@ -194,12 +200,13 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             Amount:
           </label>
           <input
-            type="number"
+            type="text"  // Cambiado a texto para permitir formato
             id="amount"
             name="amount"
-            value={formData.amount}
-            onChange={handleInputChange}
-            className={`mt-1 p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+            value={formatCurrency(formData.amount)}  // Formato con separadores
+            onChange={(e) => handleInputChange(e, true)}  // Manejador ajustado
+            onFocus={(e) => e.target.select()}  // Seleccionar texto al hacer foco
+            className={`mt-1 p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-right`}  // Alineación a la derecha
           />
           {backendErrors.amount && (
             <p className="text-black font-bold">{backendErrors.amount}</p>
@@ -226,18 +233,14 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
         <button
           type="submit"
-          className={`w-full py-3 px-4 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${loading ? 'cursor-not-allowed opacity-70' : ''}`}
+          className={`w-full py-3 px-4 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           disabled={loading}
         >
-          {loading ? <ClipLoader size={20} color={"#ffffff"} /> : "Submit Transfer"}
+          {loading ? <ClipLoader size={24} color="#fff" /> : 'Transfer'}
         </button>
-
-        {error && <p className="mt-4 text-black font-bold text-center text-lg">{error}</p>}
       </form>
     </div>
   );
 };
 
 export default TransferForm;
-
-

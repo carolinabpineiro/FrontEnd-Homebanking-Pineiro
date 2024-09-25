@@ -22,6 +22,12 @@ const FormRegister = () => {
   const navigate = useNavigate();
   const { status } = useAppSelector((state) => state.auth);
 
+  // Función para validar el email
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+    return regex.test(email);
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -33,16 +39,21 @@ const FormRegister = () => {
       password: ''
     });
 
+    // Validar el email
+    if (!validateEmail(email)) {
+      setFieldErrors((prev) => ({ ...prev, email: 'Invalid email address.' }));
+      return; // Detener el registro si el email no es válido
+    }
+
     if (status === 'loading') return;
 
     const result = await dispatch(register({ firstName, lastName, email, password }));
 
     // Mostrar tostada solo si la acción fue exitosa
     if (register.fulfilled.match(result)) {
-      // Verificar si la tostada ya ha sido mostrada
       if (!toast.isActive('registration-success')) {
         toast.success('Registration successful!', { 
-          toastId: 'registration-success', // Usar un ID único para evitar duplicados
+          toastId: 'registration-success', 
           autoClose: 2000 
         });
 
