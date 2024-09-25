@@ -22,6 +22,12 @@ const FormRegister = () => {
   const navigate = useNavigate();
   const { status } = useAppSelector((state) => state.auth);
 
+  // Función para validar el email
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+    return regex.test(email);
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -32,6 +38,12 @@ const FormRegister = () => {
       email: '',
       password: ''
     });
+
+    // Validar el email
+    if (!validateEmail(email)) {
+      setFieldErrors((prev) => ({ ...prev, email: 'Invalid email address.' }));
+      return; // Detener el registro si el email no es válido
+    }
 
     if (status === 'loading') return;
 
@@ -62,7 +74,6 @@ const FormRegister = () => {
       }
       if (backendError.includes('Email field') || backendError.includes('already registered')) {
         setFieldErrors((prev) => ({ ...prev, email: backendError }));
-        toast.error(backendError, { toastId: 'emailError' }); // Tostada de error para el email
       }
       if (backendError.includes('Password field')) {
         setFieldErrors((prev) => ({ ...prev, password: backendError }));
@@ -90,7 +101,7 @@ const FormRegister = () => {
               id="firstName"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.firstName ? 'border-red-500' : 'border-gray-300'}`}
+              className={w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.firstName ? 'border-red-500' : 'border-gray-300'}}
               placeholder="Enter your first name"
             />
             {fieldErrors.firstName && <p className="text-black font-bold">{fieldErrors.firstName}</p>}
@@ -103,7 +114,7 @@ const FormRegister = () => {
               id="lastName"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.lastName ? 'border-red-500' : 'border-gray-300'}`}
+              className={w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.lastName ? 'border-red-500' : 'border-gray-300'}}
               placeholder="Enter your last name"
             />
             {fieldErrors.lastName && <p className="text-black font-bold">{fieldErrors.lastName}</p>}
@@ -116,7 +127,7 @@ const FormRegister = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'}`}
+              className={w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'}}
               placeholder="Enter your email"
             />
             {fieldErrors.email && <p className="text-black font-bold">{fieldErrors.email}</p>}
@@ -129,7 +140,7 @@ const FormRegister = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'}`}
+              className={w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'}}
               placeholder="Enter your password"
             />
             {fieldErrors.password && <p className="text-black font-bold">{fieldErrors.password}</p>}
