@@ -53,7 +53,7 @@ const FormRegister = () => {
   
       return;
     } else if (!validateEmail(email)) {
-      setFieldErrors(prev => ({ ...prev, email: 'Invalid email format. Please ensure your email includes '@' and '.com'.' }))
+      setFieldErrors(prev => ({ ...prev, email: 'Invalid email format. Please ensure your email includes "@" and ".com".' }))
       return;
     }
     if (!password) {
