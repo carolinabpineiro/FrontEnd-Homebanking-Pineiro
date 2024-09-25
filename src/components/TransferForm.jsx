@@ -61,17 +61,17 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
     setError(null);
     setBackendErrors({});
     setTouched({}); // Reiniciar campos tocados para que se muestren errores al enviar
-
+  
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setBackendErrors(validationErrors);
       return;
     }
-
+  
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-
+  
       const response = await axios.post(
         'https://homebankingpineiro.onrender.com/api/transactions',
         {
@@ -86,13 +86,15 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           }
         }
       );
-
+  
       console.log('Transaction successful:', response.data);
       toast.success('Transaction successful');
       onTransferSuccess();
     } catch (error) {
       const backendErrorMessage = error.response?.data || error.message;
-      setError(backendErrorMessage);
+  
+      // En vez de mostrar el mensaje en el formulario, usamos toast.error
+      toast.error(backendErrorMessage); // Notificación con el mensaje de error
       console.error('Error details:', backendErrorMessage);
     } finally {
       setLoading(false);
@@ -210,7 +212,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             onChange={handleInputChange}
             className={`mt-1 p-3 w-full border ${backendErrors.description && (Object.keys(backendErrors).length > 0) ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
-          {/* Mostrar el mensaje de error solo si el campo description está vacío y se ha intentado enviar el formulario */}
+          
           {backendErrors.description && (Object.keys(backendErrors).length > 0) && (
             <p className="text-black font-bold">{backendErrors.description}</p>
           )}
