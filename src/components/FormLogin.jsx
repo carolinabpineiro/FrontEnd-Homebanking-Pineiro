@@ -90,7 +90,7 @@ const FormLogin = () => {
               placeholder="Enter your email"
             />
             {/* Mostrar error de email */}
-            {errors.email && <p className="text-red font-bold mb-2 border border-black p-2 rounded-md">{errors.email}</p>}
+            {errors.email && <p className="text-red font-bold mb-2 shadow-md shadow-black p-2 rounded-md">{errors.email}</p>}
           </div>
 
           <div className="mb-6">
@@ -104,7 +104,7 @@ const FormLogin = () => {
               placeholder="Enter your password"
             />
             {/* Mostrar error de password */}
-            {errors.password && <p className="text-red font-bold mb-2 border border-black p-2 rounded-md">{errors.password}</p>}
+            {errors.password && <p className="text-red font-bold mb-2 shadow-md shadow-black p-2 rounded-md">{errors.password}</p>}
           </div>
 
           <div>
