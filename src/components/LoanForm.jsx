@@ -51,7 +51,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     if (name === 'amount') {
       const numericValue = value.replace(/[^0-9]/g, ''); // Elimina caracteres no numéricos
-      const formattedAmount = new Intl.NumberFormat().format(numericValue); // Formatea con separador de miles
+      const formattedAmount = numericValue ? `$${Number(numericValue).toLocaleString()}` : ''; // Formatea con separador de miles
       setFormData({
         ...formData,
         [name]: formattedAmount,
@@ -70,7 +70,7 @@ const LoanForm = ({ onLoanApplied }) => {
     if (!selectedLoan) errors.loan = 'Please select a loan';
     if (!selectedAccount) errors.account = 'Please select an account';
 
-    const amountValue = parseFloat(formData.amount.replace(/,/g, '')); // Elimina comas y toma el valor numérico
+    const amountValue = parseFloat(formData.amount.replace(/[$,]/g, '')); // Elimina el símbolo de pesos y comas
     if (!formData.amount) {
       errors.amount = 'Please enter an amount';
     } else if (amountValue <= 0 || isNaN(amountValue)) {
@@ -96,7 +96,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     const loanData = {
       id: selectedLoan,
-      amount: parseFloat(formData.amount.replace(/,/g, '')), // Elimina comas antes de enviar el valor numérico
+      amount: parseFloat(formData.amount.replace(/[$,]/g, '')), // Elimina el símbolo de pesos y comas antes de enviar el valor numérico
       payments: formData.payments,
       destinationAccount: selectedAccount,
     };
@@ -112,7 +112,7 @@ const LoanForm = ({ onLoanApplied }) => {
       });
 
       toast.success('Loan successfully applied!');
-      onLoanApplied(selectedAccount, parseFloat(formData.amount));
+      onLoanApplied(selectedAccount, parseFloat(formData.amount.replace(/[$,]/g, ''))); // Usa el monto como número
 
     } catch (error) {
       if (error.response && error.response.data) {
@@ -176,7 +176,7 @@ const LoanForm = ({ onLoanApplied }) => {
         <input
           type="text"
           name="amount"
-          value={`$${formData.amount}`}  // Muestra el símbolo de pesos
+          value={formData.amount}  // Muestra el símbolo de pesos y separador de miles
           onChange={handleInputChange}
           onFocus={(e) => e.target.select()} 
           className={`w-full p-3 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
@@ -204,14 +204,16 @@ const LoanForm = ({ onLoanApplied }) => {
       {errors.payments && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
                  style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{errors.payments}</p>}
 
-      <button 
-        type="button" 
-        onClick={handleApplyLoan} 
-        className="w-full py-3 px-4 bg-green-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
-        disabled={loading}
-      >
-        {loading ? 'Applying...' : 'Apply for Loan'}
-      </button>
+      <div className="text-center">
+        <button
+          type="button"
+          onClick={handleApplyLoan}
+          className="w-full py-3 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-blue-300"
+          disabled={loading}
+        >
+          {loading ? 'Applying...' : 'Apply for Loan'}
+        </button>
+      </div>
     </div>
   );
 };
