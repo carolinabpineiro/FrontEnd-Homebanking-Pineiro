@@ -17,8 +17,8 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
     const { name, value } = e.target;
 
     if (name === "amount") {
-      // Permitir solo números
-      const cleanValue = value.replace(/[^0-9]/g, '');
+      // Permitir solo números y formatear
+      const cleanValue = value.replace(/[^0-9]/g, ''); // Eliminar caracteres no numéricos
       setFormData({
         ...formData,
         [name]: cleanValue,
@@ -29,6 +29,20 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
         [name]: value,
       });
     }
+  };
+
+  const formatAmount = (value) => {
+    if (!value) return '';
+    const numberValue = parseFloat(value);
+    if (isNaN(numberValue)) return '';
+    return `$${numberValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+  };
+
+  const handleBlur = () => {
+    setFormData({
+      ...formData,
+      amount: formData.amount, // Se asegura que el monto esté limpio
+    });
   };
 
   const handleAccountTypeChange = () => {
@@ -197,9 +211,10 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             type="text"
             id="amount"
             name="amount"
-            value={formData.amount}
+            value={formatAmount(formData.amount)} // Formatear el monto al mostrarlo
             onChange={handleInputChange}
             onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
+            onBlur={handleBlur} // Asegurarse que el monto esté limpio
             className={`p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
           {backendErrors.amount && (
@@ -227,10 +242,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           )}
         </div>
 
-        <button
-          type="submit"
-          className="bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300"
-        >
+        <button type="submit" className="mt-4 p-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-200">
           Transfer
         </button>
       </form>
