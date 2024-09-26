@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom'; 
+
 
 const TransferForm = ({ accounts, onTransferSuccess }) => {
-  const navigate = useNavigate(); // Inicializa useNavigate
+  
   const [formData, setFormData] = useState({
     sourceAccount: '',
     destinationAccount: '',
@@ -116,7 +116,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
       toast.success('Transaction successful');
       onTransferSuccess();
-      navigate(`/account/${formData.destinationAccount}`);
+      
     } catch (error) {
       const backendErrorMessage = error.response?.data || error.message;
       toast.error(backendErrorMessage);
