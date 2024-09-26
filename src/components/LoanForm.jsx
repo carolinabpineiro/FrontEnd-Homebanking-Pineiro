@@ -8,7 +8,7 @@ const LoanForm = ({ onLoanApplied }) => {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState('');
   const [formData, setFormData] = useState({
-    amount: '', 
+    amount: '',
     payments: '',
   });
   const [loading, setLoading] = useState(false);
@@ -50,7 +50,8 @@ const LoanForm = ({ onLoanApplied }) => {
     const { name, value } = e.target;
 
     if (name === 'amount') {
-      const formattedAmount = value.replace(/[^0-9.]/g, ''); // Elimina caracteres no numéricos
+      const numericValue = value.replace(/[^0-9]/g, ''); // Elimina caracteres no numéricos
+      const formattedAmount = new Intl.NumberFormat().format(numericValue); // Formatea con separador de miles
       setFormData({
         ...formData,
         [name]: formattedAmount,
@@ -206,10 +207,10 @@ const LoanForm = ({ onLoanApplied }) => {
       <button 
         type="button" 
         onClick={handleApplyLoan} 
-        className={`w-full py-3 bg-blue-600 text-white font-bold rounded-md shadow-md hover:bg-blue-700 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className="w-full py-3 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
         disabled={loading}
       >
-        {loading ? 'Processing...' : 'Apply for Loan'}
+        {loading ? 'Applying...' : 'Apply for Loan'}
       </button>
     </div>
   );
