@@ -207,7 +207,7 @@ const LoanForm = ({ onLoanApplied }) => {
       <button 
         type="button" 
         onClick={handleApplyLoan} 
-        className="w-full py-3 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
+        className="w-full py-3 px-4 bg-green-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
         disabled={loading}
       >
         {loading ? 'Applying...' : 'Apply for Loan'}
