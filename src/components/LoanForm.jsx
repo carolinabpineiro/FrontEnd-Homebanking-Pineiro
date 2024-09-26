@@ -133,7 +133,8 @@ const LoanForm = ({ onLoanApplied }) => {
       <h2 className="text-3xl font-bold text-center text-white mb-6">Apply for a Loan</h2>
 
       {errors.general && (
-        <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
+        <div className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+        style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>
           {errors.general}
         </div>
       )}
@@ -151,7 +152,8 @@ const LoanForm = ({ onLoanApplied }) => {
           </option>
         ))}
       </select>
-      {errors.loan && <p className="text-black font-bold mb-2">{errors.loan}</p>}
+      {errors.loan && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+                 style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{errors.loan}</p>}
 
       <label className="text-white">Account</label>
       <select
@@ -166,20 +168,22 @@ const LoanForm = ({ onLoanApplied }) => {
           </option>
         ))}
       </select>
-      {errors.account && <p className="text-black font-bold">{errors.account}</p>}
+      {errors.account && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+                 style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{errors.account}</p>}
 
       <label className="text-white">Amount</label>
       <div className="relative">
         <input
           type="text"
           name="amount"
-          value={formData.amount} // Mostrar solo el valor formateado con comas
+          value={formData.amount} 
           onChange={handleInputChange}
-          onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
+          onFocus={(e) => e.target.select()} 
           className={`w-full p-3 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
         />
       </div>
-      {errors.amount && <p className="text-black font-bold">{errors.amount}</p>}
+      {errors.amount && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+                 style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{errors.amount}</p>}
 
       <label className="text-white">Number of Payments</label>
       <select
@@ -197,7 +201,8 @@ const LoanForm = ({ onLoanApplied }) => {
           ))
         )}
       </select>
-      {errors.payments && <p className="text-black font-bold">{errors.payments}</p>}
+      {errors.payments && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+                 style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{errors.payments}</p>}
 
       <button
         onClick={handleApplyLoan}

@@ -120,7 +120,8 @@ const FormRegister = () => {
               className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.firstName ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your first name"
             />
-            {fieldErrors.firstName && <p className="text-black font-bold">{fieldErrors.firstName}</p>}
+            {fieldErrors.firstName && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+                 style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{fieldErrors.firstName}</p>}
           </div>
 
           <div className="mb-6">
@@ -133,7 +134,8 @@ const FormRegister = () => {
               className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.lastName ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your last name"
             />
-            {fieldErrors.lastName && <p className="text-black font-bold">{fieldErrors.lastName}</p>}
+            {fieldErrors.lastName && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+                 style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{fieldErrors.lastName}</p>}
           </div>
 
           <div className="mb-6">
@@ -146,7 +148,8 @@ const FormRegister = () => {
               className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your email"
             />
-            {fieldErrors.email && <p className="text-black font-bold">{fieldErrors.email}</p>}
+            {fieldErrors.email && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+                 style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{fieldErrors.email}</p>}
           </div>
 
           <div className="mb-6">
@@ -159,7 +162,8 @@ const FormRegister = () => {
               className={`w-full p-3 border rounded-lg focus:outline-none ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Enter your password"
             />
-            {fieldErrors.password && <p className="text-black font-bold">{fieldErrors.password}</p>}
+            {fieldErrors.password && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+                 style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{fieldErrors.password}</p>}
           </div>
 
           <div>

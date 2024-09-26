@@ -131,7 +131,8 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             ))}
           </select>
           {backendErrors.sourceAccount && (
-            <p className="text-black font-bold">{backendErrors.sourceAccount}</p>
+            <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+            style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{backendErrors.sourceAccount}</p>
           )}
         </div>
 
@@ -182,7 +183,8 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             </select>
           )}
           {backendErrors.destinationAccount && (
-            <p className="text-black font-bold">{backendErrors.destinationAccount}</p>
+            <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+            style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{backendErrors.destinationAccount}</p>
           )}
         </div>
 
@@ -201,7 +203,8 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             className={`p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
           {backendErrors.amount && (
-            <p className="text-black font-bold">{backendErrors.amount}</p>
+            <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+            style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{backendErrors.amount}</p>
           )}
         </div>
 
@@ -219,7 +222,8 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             className={`mt-1 p-3 w-full border ${backendErrors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
           />
           {backendErrors.description && (
-            <p className="text-black font-bold">{backendErrors.description}</p>
+            <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+            style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{backendErrors.description}</p>
           )}
         </div>
 
