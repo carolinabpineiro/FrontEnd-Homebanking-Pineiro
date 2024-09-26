@@ -8,7 +8,7 @@ const LoanForm = ({ onLoanApplied }) => {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState('');
   const [formData, setFormData] = useState({
-    amount: '', // Eliminar el símbolo $
+    amount: '', 
     payments: '',
   });
   const [loading, setLoading] = useState(false);
@@ -49,20 +49,11 @@ const LoanForm = ({ onLoanApplied }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Formatear solo el campo "amount" usando toLocaleString()
-    if (name === "amount") {
-      const cleanValue = value.replace(/[^0-9]/g, ''); // Eliminar caracteres que no sean números
-      const formattedValue = parseInt(cleanValue || '0', 10).toLocaleString(); // Solo formatear con comas
-      setFormData({
-        ...formData,
-        [name]: formattedValue,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+    // No se aplica conversión en el campo "amount"
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const validateForm = () => {
@@ -71,7 +62,7 @@ const LoanForm = ({ onLoanApplied }) => {
     if (!selectedLoan) errors.loan = 'Please select a loan';
     if (!selectedAccount) errors.account = 'Please select an account';
 
-    const amountValue = parseFloat(formData.amount.replace(/,/g, '')); // Solo remover comas
+    const amountValue = parseFloat(formData.amount); // Simplemente tomar el valor como número
     if (!formData.amount) {
       errors.amount = 'Please enter an amount';
     } else if (amountValue <= 0 || isNaN(amountValue)) {
@@ -82,7 +73,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     const maxAmount = loans.find(loan => loan.id === selectedLoan)?.maxAmount;
     if (maxAmount && amountValue > maxAmount) {
-      errors.amount = `Amount cannot exceed $${maxAmount.toLocaleString()}`;
+      errors.amount = `Amount cannot exceed $${maxAmount}`;
     }
 
     return errors;
@@ -97,7 +88,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     const loanData = {
       id: selectedLoan,
-      amount: parseFloat(formData.amount.replace(/,/g, '')), // Remover solo comas
+      amount: parseFloat(formData.amount), // Solo se utiliza el valor numérico tal como está
       payments: formData.payments,
       destinationAccount: selectedAccount,
     };
@@ -112,7 +103,7 @@ const LoanForm = ({ onLoanApplied }) => {
       });
 
       toast.success('Loan successfully applied!');
-      onLoanApplied(selectedAccount, parseFloat(formData.amount.replace(/,/g, '')));
+      onLoanApplied(selectedAccount, parseFloat(formData.amount));
 
     } catch (error) {
       if (error.response && error.response.data) {
