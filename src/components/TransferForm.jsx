@@ -6,7 +6,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
   const [formData, setFormData] = useState({
     sourceAccount: '',
     destinationAccount: '',
-    amount: '', // Solo números sin formateo
+    amount: '', 
     description: '',
   });
 
