@@ -49,11 +49,19 @@ const LoanForm = ({ onLoanApplied }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // No se aplica conversión en el campo "amount"
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    // Asegúrate de que el valor del amount solo contenga números y puntos decimales
+    if (name === 'amount') {
+      const formattedAmount = value.replace(/[^0-9.]/g, ''); // Elimina caracteres no numéricos
+      setFormData({
+        ...formData,
+        [name]: formattedAmount,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const validateForm = () => {
@@ -62,7 +70,7 @@ const LoanForm = ({ onLoanApplied }) => {
     if (!selectedLoan) errors.loan = 'Please select a loan';
     if (!selectedAccount) errors.account = 'Please select an account';
 
-    const amountValue = parseFloat(formData.amount); // Simplemente tomar el valor como número
+    const amountValue = parseFloat(formData.amount.replace(/,/g, '')); // Elimina comas y toma el valor numérico
     if (!formData.amount) {
       errors.amount = 'Please enter an amount';
     } else if (amountValue <= 0 || isNaN(amountValue)) {
@@ -88,7 +96,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     const loanData = {
       id: selectedLoan,
-      amount: parseFloat(formData.amount), // Solo se utiliza el valor numérico tal como está
+      amount: parseFloat(formData.amount.replace(/,/g, '')), // Elimina comas antes de enviar el valor numérico
       payments: formData.payments,
       destinationAccount: selectedAccount,
     };
@@ -96,6 +104,7 @@ const LoanForm = ({ onLoanApplied }) => {
     try {
       setLoading(true);
       setErrors({});
+      console.log(loanData);  // Verifica qué datos estás enviando
       const response = await axios.post('https://homebankingpineiro.onrender.com/api/loans/apply', loanData, {
         headers: {
           Authorization: `Bearer ${token}`,
