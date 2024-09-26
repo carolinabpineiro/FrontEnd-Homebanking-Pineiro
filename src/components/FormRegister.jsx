@@ -180,7 +180,7 @@ const FormRegister = () => {
         <div className="mt-6 text-center">
           <p className="text-gray-200">
             Already have an account?
-            <span className="text-blue-400 cursor-pointer hover:underline ml-2" onClick={handleLogin}>
+            <span className="text-green-400 cursor-pointer hover:underline ml-2" onClick={handleLogin}>
               Login
             </span>
           </p>

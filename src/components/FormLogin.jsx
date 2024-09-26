@@ -124,7 +124,7 @@ const FormLogin = () => {
           <div>
             <button
               type="submit"
-              className="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300"
+              className="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300"
               disabled={status === 'loading'}
             >
               {status === 'loading' ? 'Logging in...' : 'Login'}
@@ -135,7 +135,7 @@ const FormLogin = () => {
         <div className="mt-6 text-center">
           <p className="text-gray-200">
             Don't have an account?
-            <span className="text-blue-400 cursor-pointer hover:underline ml-2" onClick={handleRegister}>
+            <span className="text-green-400 cursor-pointer hover:underline ml-2" onClick={handleRegister}>
               Register
             </span>
           </p>

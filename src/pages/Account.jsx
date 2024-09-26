@@ -70,7 +70,7 @@ const Account = () => {
         )}
         <TransactionsResume transactions={transactions} />
       </div>
-      {/* Aquí puedes agregar más componentes o lógica según necesites */}
+      
     </div>
   );
 };
