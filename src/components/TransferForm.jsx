@@ -242,7 +242,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           )}
         </div>
 
-        <button type="submit" className="mt-4 p-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-200">
+        <button type="submit" className="mt-4 p-3 bg-green-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-200">
           Transfer
         </button>
       </form>

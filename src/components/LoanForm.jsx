@@ -49,7 +49,6 @@ const LoanForm = ({ onLoanApplied }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Asegúrate de que el valor del amount solo contenga números y puntos decimales
     if (name === 'amount') {
       const formattedAmount = value.replace(/[^0-9.]/g, ''); // Elimina caracteres no numéricos
       setFormData({
@@ -176,7 +175,7 @@ const LoanForm = ({ onLoanApplied }) => {
         <input
           type="text"
           name="amount"
-          value={formData.amount} 
+          value={`$${formData.amount}`}  // Muestra el símbolo de pesos
           onChange={handleInputChange}
           onFocus={(e) => e.target.select()} 
           className={`w-full p-3 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
@@ -204,12 +203,13 @@ const LoanForm = ({ onLoanApplied }) => {
       {errors.payments && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
                  style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{errors.payments}</p>}
 
-      <button
-        onClick={handleApplyLoan}
-        className={`w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300 ${loading ? 'cursor-not-allowed opacity-70' : ''}`}
+      <button 
+        type="button" 
+        onClick={handleApplyLoan} 
+        className={`w-full py-3 bg-blue-600 text-white font-bold rounded-md shadow-md hover:bg-blue-700 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
         disabled={loading}
       >
-        {loading ? 'Loading...' : 'Apply'}
+        {loading ? 'Processing...' : 'Apply for Loan'}
       </button>
     </div>
   );
