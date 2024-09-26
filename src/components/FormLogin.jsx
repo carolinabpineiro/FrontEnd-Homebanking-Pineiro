@@ -18,7 +18,6 @@ const FormLogin = () => {
   const navigate = useNavigate();
   const { status } = useAppSelector((state) => state.auth);
 
-  // Función de validación del email
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
     return regex.test(email);
@@ -27,11 +26,9 @@ const FormLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     localStorage.removeItem('cards'); 
-  
-    // Reseteamos los errores previos
+    
     setErrors({ email: '', password: '' });
-  
-    // Validar el email manualmente
+    
     if (!email) {
       setErrors((prev) => ({ ...prev, email: 'Email is required' }));
       toast.error('Email is required', { toastId: 'emailRequired' });
@@ -41,31 +38,30 @@ const FormLogin = () => {
       toast.error('Invalid email format', { toastId: 'invalidEmail' });
       return;
     }
-  
+    
     if (!password) {
       setErrors((prev) => ({ ...prev, password: 'Password is required' }));
       toast.error('Password is required', { toastId: 'passwordRequired' });
       return;
     }
-  
+    
     try {
       const result = await dispatch(login({ email, password }));
       
-      console.log("Login result:", result); // Agregamos logging para ver el resultado
-  
+      console.log("Login result:", result);
+      
       if (result.type === 'auth/login/fulfilled') {
         navigate('/accounts');
       } else {
         const backendError = result.payload;
         if (backendError) {
-          // Manejo de errores del backend
           if (backendError.includes('Sorry, email or password invalid')) {
             toast.error('Sorry, email or password invalid', { toastId: 'loginError' });
           }
         }
       }
     } catch (err) {
-      console.error("Error during login:", err); // Log del error para más información
+      console.error("Error during login:", err);
       toast.error('An unexpected error occurred. Please try again later.', { toastId: 'unexpectedError' });
     }
   };
@@ -94,7 +90,7 @@ const FormLogin = () => {
               placeholder="Enter your email"
             />
             {/* Mostrar error de email */}
-            {errors.email && <p className="font-bold text-black">{errors.email}</p>}
+            {errors.email && <p className="text-red font-bold mb-2 border border-black p-2 rounded-md">{errors.email}</p>}
           </div>
 
           <div className="mb-6">
@@ -107,7 +103,8 @@ const FormLogin = () => {
               className={`w-full p-3 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter your password"
             />
-            {errors.password && <p className="font-bold text-black">{errors.password}</p>}
+            {/* Mostrar error de password */}
+            {errors.password && <p className="text-red font-bold mb-2 border border-black p-2 rounded-md">{errors.password}</p>}
           </div>
 
           <div>
