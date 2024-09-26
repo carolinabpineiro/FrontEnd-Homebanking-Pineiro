@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-//import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom'; 
 
 
 const TransferForm = ({ accounts, onTransferSuccess }) => {
-  //const navigate = useNavigate(); 
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     sourceAccount: '',
     destinationAccount: '',
@@ -115,18 +115,11 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
        // Mostrar la respuesta en la consola
     console.log('Transaction response:', response.data);
 
-    // Obtener el ID de la cuenta destino
-    //const accountResponse = await axios.get(`https://homebankingpineiro.onrender.com/api/accounts/${formData.destinationAccount}`, {
-      //headers: {
-        //Authorization: `Bearer ${token}`,
-      //}
-    //});
-
-    //const destinationAccountId = accountResponse.data.id; // Asegúrate de que la respuesta contenga el ID
+  
 
     toast.success('Transaction successful');
     onTransferSuccess();
-    //navigate(`/account/${destinationAccountId}`);
+    navigate(`/accounts`);
       
     } catch (error) {
       const backendErrorMessage = error.response?.data || error.message;
