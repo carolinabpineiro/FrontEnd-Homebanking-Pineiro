@@ -6,7 +6,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
   const [formData, setFormData] = useState({
     sourceAccount: '',
     destinationAccount: '',
-    amount: '$', // Iniciar con el símbolo $
+    amount: '', // Solo números sin formateo
     description: '',
   });
 
@@ -15,16 +15,13 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
-    // Formatear el campo de monto
+
     if (name === "amount") {
-      // Mantener el símbolo $ delante del valor y formatear
-      const cleanValue = value.replace(/[^0-9]/g, ''); // Remover todo menos números
-      const formattedValue = `$${parseInt(cleanValue || '0', 10).toLocaleString()}`;
-      
+      // Permitir solo números
+      const cleanValue = value.replace(/[^0-9]/g, '');
       setFormData({
         ...formData,
-        [name]: formattedValue,
+        [name]: cleanValue,
       });
     } else {
       setFormData({
@@ -56,7 +53,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
     }
 
     // Validación para amount
-    const amountValue = parseFloat(formData.amount.replace(/[$,]/g, '')); // Remover $ y comas
+    const amountValue = parseFloat(formData.amount);
     if (!formData.amount) {
       errors.amount = 'Amount is required.';
     } else if (amountValue <= 0 || isNaN(amountValue)) {
@@ -88,7 +85,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
         {
           sourceAccount: formData.sourceAccount,
           destinationAccount: formData.destinationAccount,
-          amount: parseFloat(formData.amount.replace(/[$,]/g, '')), // Send clean number
+          amount: parseFloat(formData.amount), // Convertir el valor a número
           description: formData.description,
         },
         {
@@ -97,6 +94,9 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
           }
         }
       );
+
+      // Mostrar la respuesta en la consola
+      console.log('Transaction response:', response.data);
 
       toast.success('Transaction successful');
       onTransferSuccess();
@@ -197,7 +197,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             type="text"
             id="amount"
             name="amount"
-            value={formData.amount} // Mostrar siempre el valor con $
+            value={formData.amount}
             onChange={handleInputChange}
             onFocus={(e) => e.target.select()} // Seleccionar texto al hacer foco
             className={`p-3 w-full border ${backendErrors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
