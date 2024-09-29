@@ -31,25 +31,25 @@ function Nav() {
       <div className={`flex-grow md:flex ${isOpen ? 'flex' : 'hidden'} md:justify-end flex-col md:flex-row`}>
         <Link 
           to="/accounts" 
-          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-full md:w-32 md:mr-4 mb-2 md:mb-0"
+          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-full md:w-32 md:mr-4 mb-2 md:mb-0 flex justify-center text-center"
         >
           Accounts
         </Link>
         <Link 
           to="/cards" 
-          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-full md:w-32 md:mr-4 mb-2 md:mb-0"
+          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-full md:w-32 md:mr-4 mb-2 md:mb-0 flex justify-center text-center"
         >
           Cards
         </Link>
         <Link 
           to="/loans" 
-          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-full md:w-32 md:mr-4 mb-2 md:mb-0"
+          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-full md:w-32 md:mr-4 mb-2 md:mb-0 flex justify-center text-center"
         >
           Loans
         </Link>
         <Link 
           to="/transactions" 
-          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-full md:w-32"
+          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition w-full md:w-32 flex justify-center text-center"
         >
           Transactions
         </Link>

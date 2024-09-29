@@ -147,7 +147,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
             <option value="">Select an account</option>
             {accounts.map(account => (
               <option key={account.id} value={account.number}>
-                {account.number} - Balance: {account.balance}
+                {account.number} - Balance: ${account.balance.toLocaleString('en-US')}
               </option>
             ))}
           </select>
@@ -197,7 +197,7 @@ const TransferForm = ({ accounts, onTransferSuccess }) => {
               {accounts.map(account => (
                 formData.sourceAccount !== account.number && (
                   <option key={account.id} value={account.number}>
-                    {account.number} - Balance: {account.balance}
+                    {account.number} - Balance: ${account.balance.toLocaleString('en-US')}
                   </option>
                 )
               ))}

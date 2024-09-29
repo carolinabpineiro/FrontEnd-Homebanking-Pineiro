@@ -148,11 +148,11 @@ const LoanForm = ({ onLoanApplied }) => {
         <option value="">Select a loan</option>
         {loans.map((loan) => (
           <option key={loan.id} value={loan.id}>
-            {loan.name} (Max: ${loan.maxAmount})
+            {loan.name} (Max: ${loan.maxAmount.toLocaleString('en-US')})
           </option>
         ))}
       </select>
-      {errors.loan && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+      {errors.loan && <p className="text-red-600 font-bold -mt-4 mb-2 rounded-md" 
                  style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{errors.loan}</p>}
 
       <label className="text-white">Account</label>
@@ -168,7 +168,7 @@ const LoanForm = ({ onLoanApplied }) => {
           </option>
         ))}
       </select>
-      {errors.account && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+      {errors.account && <p className="text-red-600 font-bold -mt-4 mb-2 rounded-md" 
                  style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{errors.account}</p>}
 
       <label className="text-white">Amount</label>
@@ -182,7 +182,7 @@ const LoanForm = ({ onLoanApplied }) => {
           className={`w-full p-3 mb-6 border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
         />
       </div>
-      {errors.amount && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+      {errors.amount && <p className="text-red-600 font-bold -mt-4 mb-2 rounded-md" 
                  style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{errors.amount}</p>}
 
       <label className="text-white">Number of Payments</label>
@@ -201,7 +201,7 @@ const LoanForm = ({ onLoanApplied }) => {
           ))
         )}
       </select>
-      {errors.payments && <p className="text-red-600 font-bold mb-2 p-2 rounded-md" 
+      {errors.payments && <p className="text-red-600 font-bold -mt-4 mb-2 rounded-md" 
                  style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>{errors.payments}</p>}
 
       <button

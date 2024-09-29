@@ -25,11 +25,11 @@ function Transactions() {
 
   return (
     <div
-      className="flex flex-col h-screen bg-cover bg-center"
+      className="flex flex-col h-[748px] bg-cover bg-center bg-no-repeat overflow-hidden"
       style={{ backgroundImage: "url('/transfer.jpg')" }}
     >
-      <ToastContainer /> {/* Agrega el ToastContainer aquí */}
-      <div className="flex-grow flex items-start justify-center mt-32"> {/* Alineado hacia la parte superior */}
+      <ToastContainer />
+      <div className="flex-grow flex items-start justify-center mt-12 mb-12">
         <TransferForm accounts={accounts} onTransferSuccess={loadAccounts} />
       </div>
     </div>
@@ -37,3 +37,4 @@ function Transactions() {
 }
 
 export default Transactions;
+
