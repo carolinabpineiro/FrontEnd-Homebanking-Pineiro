@@ -81,7 +81,7 @@ const LoanForm = ({ onLoanApplied }) => {
 
     const maxAmount = loans.find(loan => loan.id === selectedLoan)?.maxAmount;
     if (maxAmount && amountValue > maxAmount) {
-      errors.amount = `Amount cannot exceed $${maxAmount}`;
+      errors.amount = `Amount cannot exceed`;
     }
     
     return errors;
@@ -120,7 +120,7 @@ const LoanForm = ({ onLoanApplied }) => {
           toast.error('You have already applied for this loan');
         } else {
           setErrors(error.response.data);
-          toast.error('Error applying for loan!');
+          toast.error('Error applying for loan!. Amount cannot exceed.');
         }
       }
     } finally {
